@@ -1,0 +1,3000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TERRA LUXE — Premium Tiles & Furnishings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;1,500&display=swap" rel="stylesheet"/>
+  <style>
+    /* =========================================
+       CSS CUSTOM PROPERTIES & RESET
+    ========================================= */
+    :root {
+      --c-bg: #0e0d0b;
+      --c-bg2: #141310;
+      --c-bg3: #1c1a16;
+      --c-surface: #222018;
+      --c-border: #2e2b24;
+      --c-gold: #c9a84c;
+      --c-gold-light: #e8c97a;
+      --c-gold-dim: rgba(201,168,76,0.15);
+      --c-text: #f0ebe0;
+      --c-text-muted: #9a9080;
+      --c-text-dim: #6a6458;
+      --c-accent: #8b6914;
+      --c-white: #fdfbf5;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-heading: 'Playfair Display', serif;
+      --font-body: 'DM Sans', sans-serif;
+      --nav-h: 72px;
+      --radius: 4px;
+      --trans: 0.3s ease;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--c-bg);
+      color: var(--c-text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+    ul { list-style: none; }
+
+    /* =========================================
+       SCROLLBAR
+    ========================================= */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--c-bg2); }
+    ::-webkit-scrollbar-thumb { background: var(--c-gold); border-radius: 3px; }
+
+    /* =========================================
+       PAGE SYSTEM (SPA routing)
+    ========================================= */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* =========================================
+       NAVIGATION
+    ========================================= */
+    #navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      height: var(--nav-h);
+      background: rgba(14,13,11,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4vw;
+      transition: box-shadow var(--trans);
+    }
+    #navbar.scrolled {
+      box-shadow: 0 4px 40px rgba(0,0,0,0.6);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 14px;
+      cursor: pointer;
+    }
+    .nav-logo-icon {
+      width: 44px; height: 44px;
+      border: 1.5px solid var(--c-gold);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .nav-logo-icon::before, .nav-logo-icon::after {
+      content: '';
+      position: absolute;
+      background: var(--c-gold);
+    }
+    .nav-logo-icon::before { width: 60%; height: 1px; }
+    .nav-logo-icon::after { width: 1px; height: 60%; }
+    .nav-logo-letter {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--c-gold);
+      letter-spacing: 0.04em;
+    }
+    .nav-logo-text { line-height: 1.1; }
+    .nav-logo-name {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--c-white);
+    }
+    .nav-logo-tagline {
+      font-size: 0.6rem;
+      letter-spacing: 0.22em;
+      color: var(--c-gold);
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 0;
+    }
+    .nav-item {
+      position: relative;
+    }
+    .nav-link {
+      display: flex; align-items: center; gap: 5px;
+      padding: 0 16px;
+      height: var(--nav-h);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      transition: color var(--trans);
+      white-space: nowrap;
+    }
+    .nav-link:hover, .nav-link.active { color: var(--c-gold); }
+    .nav-arrow {
+      width: 6px; height: 6px;
+      border-right: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+      transform: rotate(45deg) translateY(-2px);
+      transition: transform var(--trans);
+    }
+    .nav-item:hover .nav-arrow { transform: rotate(225deg) translateY(-2px); }
+
+    /* Dropdown */
+    .nav-dropdown {
+      position: absolute;
+      top: 100%; left: 0;
+      min-width: 220px;
+      background: var(--c-bg2);
+      border: 1px solid var(--c-border);
+      border-top: 2px solid var(--c-gold);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(8px);
+      transition: all var(--trans);
+      z-index: 999;
+    }
+    .nav-item:hover .nav-dropdown {
+      opacity: 1; visibility: visible; transform: translateY(0);
+    }
+    .nav-dropdown a {
+      display: block;
+      padding: 11px 20px;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--c-text-muted);
+      border-bottom: 1px solid var(--c-border);
+      transition: all var(--trans);
+    }
+    .nav-dropdown a:last-child { border-bottom: none; }
+    .nav-dropdown a:hover {
+      color: var(--c-gold);
+      background: var(--c-gold-dim);
+      padding-left: 28px;
+    }
+    .nav-cta {
+      margin-left: 20px;
+      padding: 9px 22px;
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--c-gold);
+      border: 1px solid var(--c-gold);
+      transition: all var(--trans);
+    }
+    .nav-cta:hover {
+      background: var(--c-gold);
+      color: var(--c-bg);
+    }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 1.5px;
+      background: var(--c-text);
+      transition: all var(--trans);
+    }
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: var(--nav-h); left: 0; right: 0; bottom: 0;
+      background: var(--c-bg2);
+      z-index: 999;
+      overflow-y: auto;
+      padding: 30px 6vw 60px;
+    }
+    .mobile-menu.open { display: block; }
+    .mobile-menu a {
+      display: block;
+      padding: 14px 0;
+      font-size: 0.85rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      border-bottom: 1px solid var(--c-border);
+    }
+    .mobile-menu a:hover { color: var(--c-gold); }
+    .mobile-section-title {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--c-gold);
+      text-transform: uppercase;
+      padding-top: 24px;
+      padding-bottom: 6px;
+    }
+
+    /* =========================================
+       HERO SECTION
+    ========================================= */
+    #hero {
+      height: 100vh;
+      min-height: 640px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+    .hero-slides {
+      position: absolute;
+      inset: 0;
+    }
+    .hero-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+    .hero-slide.active { opacity: 1; }
+    .hero-slide-bg {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    /* Gradient tile backgrounds using CSS */
+    .slide-bg-1 {
+      background:
+        linear-gradient(135deg, #1a1208 0%, #2d2010 30%, #0e0d0b 100%),
+        repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(201,168,76,0.06) 60px),
+        repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(201,168,76,0.06) 60px);
+      background-size: 100%, 60px 60px, 60px 60px;
+    }
+    .slide-bg-2 {
+      background:
+        linear-gradient(135deg, #0a1015 0%, #15202a 50%, #0e0d0b 100%),
+        repeating-linear-gradient(45deg, transparent, transparent 29px, rgba(201,168,76,0.04) 30px),
+        repeating-linear-gradient(-45deg, transparent, transparent 29px, rgba(201,168,76,0.04) 30px);
+      background-size: 100%, 60px 60px, 60px 60px;
+    }
+    .slide-bg-3 {
+      background:
+        linear-gradient(135deg, #120c0c 0%, #201510 50%, #0e0d0b 100%),
+        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(201,168,76,0.05) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(201,168,76,0.05) 40px);
+      background-size: 100%, 40px 40px, 40px 40px;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(14,13,11,0.9) 45%, rgba(14,13,11,0.3) 100%);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 0 10vw;
+      max-width: 780px;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.65rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--c-gold);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.3s forwards;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 40px; height: 1px;
+      background: var(--c-gold);
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 7vw, 6.5rem);
+      font-weight: 300;
+      line-height: 1.0;
+      letter-spacing: -0.01em;
+      color: var(--c-white);
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.5s forwards;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--c-gold-light);
+    }
+    .hero-subtitle {
+      font-size: 1rem;
+      color: var(--c-text-muted);
+      max-width: 480px;
+      margin-bottom: 48px;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.7s forwards;
+    }
+    .hero-actions {
+      display: flex; align-items: center; gap: 24px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.9s forwards;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 36px;
+      background: var(--c-gold);
+      color: var(--c-bg);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 600;
+      transition: all var(--trans);
+    }
+    .btn-primary:hover {
+      background: var(--c-gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(201,168,76,0.3);
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      transition: color var(--trans);
+    }
+    .btn-secondary:hover { color: var(--c-gold); }
+    .btn-secondary::after {
+      content: '→';
+      transition: transform var(--trans);
+    }
+    .btn-secondary:hover::after { transform: translateX(4px); }
+    .hero-indicators {
+      position: absolute;
+      bottom: 50px; right: 8vw;
+      z-index: 2;
+      display: flex; gap: 8px;
+    }
+    .hero-dot {
+      width: 24px; height: 2px;
+      background: rgba(201,168,76,0.3);
+      cursor: pointer;
+      transition: all var(--trans);
+    }
+    .hero-dot.active {
+      width: 48px;
+      background: var(--c-gold);
+    }
+    .hero-scroll-hint {
+      position: absolute;
+      bottom: 48px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .hero-scroll-text {
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--c-text-dim);
+    }
+    .scroll-line {
+      width: 1px; height: 48px;
+      background: linear-gradient(to bottom, var(--c-gold), transparent);
+      animation: scrollAnim 2s ease infinite;
+    }
+
+    /* =========================================
+       SECTION COMMONS
+    ========================================= */
+    section {
+      padding: 100px 8vw;
+    }
+    .section-eyebrow {
+      font-size: 0.62rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--c-gold);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-eyebrow::before {
+      content: ''; width: 32px; height: 1px; background: var(--c-gold);
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 300;
+      color: var(--c-white);
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .section-title em {
+      font-style: italic;
+      color: var(--c-gold-light);
+    }
+    .section-desc {
+      font-size: 0.92rem;
+      color: var(--c-text-muted);
+      max-width: 520px;
+      line-height: 1.8;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 60px;
+      gap: 40px;
+    }
+    .divider {
+      width: 60px; height: 1px;
+      background: linear-gradient(to right, var(--c-gold), transparent);
+      margin: 24px 0;
+    }
+
+    /* =========================================
+       FEATURED CATEGORIES (HOME)
+    ========================================= */
+    #categories {
+      background: var(--c-bg2);
+    }
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .cat-card {
+      position: relative;
+      height: 360px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .cat-card-bg {
+      width: 100%; height: 100%;
+      transition: transform 0.7s ease;
+    }
+    .cat-card:hover .cat-card-bg { transform: scale(1.06); }
+    /* Tile pattern backgrounds */
+    .cat-bg-wall {
+      background: linear-gradient(135deg, #1e1510 0%, #2d2418 100%);
+      position: relative;
+    }
+    .cat-bg-wall::after {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(201,168,76,0.12) 50px),
+        repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(201,168,76,0.12) 50px);
+      background-size: 50px 50px;
+    }
+    .cat-bg-floor {
+      background: linear-gradient(135deg, #101820 0%, #1a2a35 100%);
+      position: relative;
+    }
+    .cat-bg-floor::after {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        repeating-linear-gradient(45deg, transparent, transparent 34px, rgba(201,168,76,0.1) 35px),
+        repeating-linear-gradient(-45deg, transparent, transparent 34px, rgba(201,168,76,0.1) 35px);
+      background-size: 70px 70px;
+    }
+    .cat-bg-special {
+      background: linear-gradient(135deg, #150c18 0%, #201428 100%);
+      position: relative;
+    }
+    .cat-bg-special::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(201,168,76,0.08) 0%, transparent 70%);
+    }
+    .cat-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(14,13,11,0.95) 0%, rgba(14,13,11,0.2) 60%);
+    }
+    .cat-content {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 32px;
+    }
+    .cat-icon {
+      width: 36px; height: 36px;
+      border: 1px solid var(--c-gold);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+      font-size: 1rem;
+    }
+    .cat-title {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 400;
+      color: var(--c-white);
+      margin-bottom: 6px;
+    }
+    .cat-count {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      color: var(--c-gold);
+      text-transform: uppercase;
+    }
+    .cat-arrow {
+      position: absolute;
+      top: 32px; right: 32px;
+      width: 40px; height: 40px;
+      border: 1px solid rgba(201,168,76,0.3);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--c-gold);
+      font-size: 1.1rem;
+      transform: translateX(10px);
+      opacity: 0;
+      transition: all var(--trans);
+    }
+    .cat-card:hover .cat-arrow {
+      opacity: 1; transform: translateX(0);
+    }
+
+    /* =========================================
+       SPECIAL TILES (HOME FEATURE)
+    ========================================= */
+    #special-tiles {
+      background: var(--c-bg);
+    }
+    .special-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    .special-card {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+      transition: all var(--trans);
+      cursor: pointer;
+    }
+    .special-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 0;
+      background: var(--c-gold);
+      transition: height 0.4s ease;
+    }
+    .special-card:hover::before { height: 100%; }
+    .special-card:hover { border-color: var(--c-gold); transform: translateY(-4px); }
+    .special-number {
+      font-family: var(--font-display);
+      font-size: 4rem;
+      font-weight: 300;
+      color: var(--c-border);
+      line-height: 1;
+      margin-bottom: 20px;
+      transition: color var(--trans);
+    }
+    .special-card:hover .special-number { color: var(--c-gold-dim); }
+    .special-card-title {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--c-white);
+      margin-bottom: 12px;
+    }
+    .special-card-desc {
+      font-size: 0.85rem;
+      color: var(--c-text-muted);
+      line-height: 1.7;
+    }
+    .special-badge {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 5px 14px;
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border: 1px solid var(--c-gold);
+      color: var(--c-gold);
+    }
+
+    /* =========================================
+       STATS STRIP
+    ========================================= */
+    .stats-strip {
+      background: var(--c-surface);
+      border-top: 1px solid var(--c-border);
+      border-bottom: 1px solid var(--c-border);
+      padding: 50px 8vw;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+    .stat-item {
+      text-align: center;
+      border-right: 1px solid var(--c-border);
+      padding: 20px 0;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: 3.2rem;
+      font-weight: 300;
+      color: var(--c-gold);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+    }
+
+    /* =========================================
+       EXPERT CORNER (HOME PREVIEW)
+    ========================================= */
+    #expert-preview {
+      background: var(--c-bg2);
+    }
+    .expert-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+    }
+    .expert-card {
+      background: var(--c-bg3);
+      padding: 36px;
+      border: 1px solid var(--c-border);
+      transition: all var(--trans);
+      cursor: pointer;
+    }
+    .expert-card:hover {
+      border-color: var(--c-gold);
+      background: var(--c-surface);
+    }
+    .expert-type {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--c-gold);
+      margin-bottom: 16px;
+    }
+    .expert-card-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--c-white);
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .expert-card-excerpt {
+      font-size: 0.82rem;
+      color: var(--c-text-muted);
+      line-height: 1.7;
+    }
+    .expert-card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 24px;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--c-gold);
+      transition: gap var(--trans);
+    }
+    .expert-card:hover .expert-card-link { gap: 14px; }
+
+    /* =========================================
+       CATALOGUE SECTION
+    ========================================= */
+    #catalogue-section {
+      background: var(--c-bg);
+      padding: 100px 8vw;
+    }
+    .catalogue-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 60px;
+    }
+    .catalogue-card {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      padding: 40px 32px;
+      text-align: center;
+      transition: all var(--trans);
+      cursor: pointer;
+    }
+    .catalogue-card:hover {
+      border-color: var(--c-gold);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .catalogue-icon {
+      width: 64px; height: 64px;
+      border: 1px solid var(--c-gold);
+      margin: 0 auto 24px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+    }
+    .catalogue-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      color: var(--c-white);
+      margin-bottom: 10px;
+    }
+    .catalogue-desc {
+      font-size: 0.8rem;
+      color: var(--c-text-muted);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 24px;
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--c-gold);
+      border: 1px solid var(--c-gold);
+      transition: all var(--trans);
+    }
+    .btn-outline:hover {
+      background: var(--c-gold);
+      color: var(--c-bg);
+    }
+
+    /* =========================================
+       PRODUCT PAGES
+    ========================================= */
+    .page-hero {
+      height: 380px;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 8vw 60px;
+      position: relative;
+      overflow: hidden;
+      margin-top: var(--nav-h);
+    }
+    .page-hero-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, #12100a, #1e1a12);
+    }
+    .page-hero-pattern {
+      position: absolute; inset: 0;
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(201,168,76,0.07) 50px),
+        repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(201,168,76,0.07) 50px);
+      background-size: 50px 50px;
+    }
+    .page-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(14,13,11,0.95) 0%, transparent 60%);
+    }
+    .page-hero-content { position: relative; z-index: 1; }
+    .page-breadcrumb {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--c-text-dim);
+      margin-bottom: 16px;
+    }
+    .page-breadcrumb span { color: var(--c-gold); }
+    .page-hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 5vw, 4.5rem);
+      font-weight: 300;
+      color: var(--c-white);
+    }
+    .page-hero-title em { font-style: italic; color: var(--c-gold-light); }
+
+    /* Product subcategory tabs */
+    .sub-tabs {
+      background: var(--c-bg2);
+      border-bottom: 1px solid var(--c-border);
+      padding: 0 8vw;
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+    }
+    .sub-tab {
+      padding: 18px 24px;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: all var(--trans);
+      white-space: nowrap;
+    }
+    .sub-tab:hover { color: var(--c-gold); }
+    .sub-tab.active {
+      color: var(--c-gold);
+      border-bottom-color: var(--c-gold);
+    }
+
+    /* Products grid */
+    .products-section {
+      padding: 80px 8vw;
+      background: var(--c-bg);
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .product-card {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      overflow: hidden;
+      transition: all var(--trans);
+      cursor: pointer;
+    }
+    .product-card:hover {
+      border-color: rgba(201,168,76,0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+    .product-img {
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+    }
+    .product-img-bg {
+      width: 100%; height: 100%;
+      transition: transform 0.6s ease;
+    }
+    .product-card:hover .product-img-bg { transform: scale(1.05); }
+    .product-badge {
+      position: absolute;
+      top: 12px; left: 12px;
+      padding: 4px 10px;
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      background: var(--c-gold);
+      color: var(--c-bg);
+    }
+    .compare-check {
+      position: absolute;
+      top: 12px; right: 12px;
+      width: 28px; height: 28px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(14,13,11,0.7);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all var(--trans);
+      color: var(--c-text-dim);
+    }
+    .compare-check.checked {
+      background: var(--c-gold);
+      border-color: var(--c-gold);
+      color: var(--c-bg);
+    }
+    .product-info {
+      padding: 24px;
+    }
+    .product-name {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--c-white);
+      margin-bottom: 6px;
+    }
+    .product-size {
+      font-size: 0.7rem;
+      color: var(--c-gold);
+      letter-spacing: 0.12em;
+      margin-bottom: 12px;
+    }
+    .product-features {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .feat-tag {
+      padding: 3px 10px;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      background: var(--c-bg3);
+      color: var(--c-text-muted);
+      border: 1px solid var(--c-border);
+    }
+    .product-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-sm {
+      flex: 1;
+      padding: 9px 14px;
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border: 1px solid var(--c-border);
+      color: var(--c-text-muted);
+      text-align: center;
+      transition: all var(--trans);
+    }
+    .btn-sm:hover { border-color: var(--c-gold); color: var(--c-gold); }
+    .btn-sm-gold {
+      background: var(--c-gold-dim);
+      border-color: var(--c-gold);
+      color: var(--c-gold);
+    }
+
+    /* Tile pattern visuals */
+    .tile-pattern-1 {
+      background: linear-gradient(135deg, #c4b89a 0%, #e8dcc0 50%, #d4c8a8 100%);
+      position: relative;
+    }
+    .tile-pattern-1::after {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(0,0,0,0.1) 50px),
+        repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(0,0,0,0.1) 50px);
+      background-size: 50px 50px;
+    }
+    .tile-pattern-2 {
+      background: linear-gradient(135deg, #8fa0b0 0%, #c8d4dc 50%, #9daab8 100%);
+    }
+    .tile-pattern-3 {
+      background: linear-gradient(135deg, #5a4030 0%, #8a6850 50%, #6a5040 100%);
+    }
+    .tile-pattern-4 {
+      background: linear-gradient(135deg, #2a3020 0%, #4a5838 50%, #3a4828 100%);
+    }
+    .tile-pattern-5 {
+      background: linear-gradient(135deg, #302828 0%, #504040 50%, #402e2e 100%);
+    }
+    .tile-pattern-6 {
+      background: linear-gradient(135deg, #1c1c20 0%, #34343c 50%, #282830 100%);
+    }
+    .tile-pattern-marble {
+      background: linear-gradient(135deg, #f0ece4 0%, #e8e2d8 30%, #f4f0e8 60%, #dcd6cc 100%);
+      position: relative;
+    }
+    .tile-pattern-marble::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        125deg,
+        transparent 0px,
+        transparent 20px,
+        rgba(180,170,155,0.3) 21px,
+        transparent 22px,
+        transparent 40px
+      );
+    }
+    .tile-pattern-wood {
+      background: linear-gradient(135deg, #8B5E3C 0%, #A0714F 50%, #7A4F2E 100%);
+    }
+    .tile-pattern-terrazzo {
+      background: #e8e0d4;
+      position: relative;
+    }
+    .tile-pattern-terrazzo::after {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle 2px at 20% 30%, #c8b89a 100%, transparent 100%),
+        radial-gradient(circle 3px at 60% 70%, #a09080 100%, transparent 100%),
+        radial-gradient(circle 2px at 80% 20%, #b8a888 100%, transparent 100%),
+        radial-gradient(circle 4px at 40% 60%, #d0c0a8 100%, transparent 100%);
+    }
+
+    /* =========================================
+       COMPARISON TOOL
+    ========================================= */
+    #compare-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 500;
+      background: var(--c-surface);
+      border-top: 2px solid var(--c-gold);
+      padding: 16px 8vw;
+      display: none;
+      align-items: center;
+      gap: 20px;
+      animation: slideUp 0.3s ease;
+    }
+    #compare-bar.visible { display: flex; }
+    .compare-bar-items {
+      display: flex; gap: 12px; flex: 1;
+    }
+    .compare-slot {
+      flex: 1;
+      max-width: 180px;
+      background: var(--c-bg2);
+      border: 1px dashed var(--c-border);
+      padding: 10px 14px;
+      font-size: 0.7rem;
+      color: var(--c-text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .compare-slot.filled {
+      border-color: var(--c-gold);
+      color: var(--c-text);
+    }
+    .compare-bar-title {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      white-space: nowrap;
+    }
+
+    /* Comparison modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 2000;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 80px 4vw 40px;
+      overflow-y: auto;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--c-bg2);
+      border: 1px solid var(--c-border);
+      width: 100%;
+      max-width: 900px;
+      padding: 50px;
+      position: relative;
+      animation: fadeUp 0.3s ease;
+    }
+    .modal-close {
+      position: absolute;
+      top: 20px; right: 20px;
+      width: 36px; height: 36px;
+      border: 1px solid var(--c-border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--c-text-muted);
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all var(--trans);
+    }
+    .modal-close:hover { border-color: var(--c-gold); color: var(--c-gold); }
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 300;
+      color: var(--c-white);
+      margin-bottom: 40px;
+    }
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .compare-table th {
+      background: var(--c-surface);
+      padding: 14px 20px;
+      text-align: left;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--c-gold);
+      border: 1px solid var(--c-border);
+    }
+    .compare-table td {
+      padding: 14px 20px;
+      font-size: 0.82rem;
+      color: var(--c-text-muted);
+      border: 1px solid var(--c-border);
+    }
+    .compare-table tr:nth-child(odd) td { background: var(--c-bg3); }
+    .compare-feature-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--c-text-dim);
+      text-transform: uppercase;
+    }
+
+    /* =========================================
+       EXPERT CORNER PAGE
+    ========================================= */
+    .expert-tools {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 60px;
+    }
+    .expert-tool-card {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      padding: 40px;
+    }
+    .expert-tool-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--c-white);
+      margin-bottom: 8px;
+    }
+    .expert-tool-desc {
+      font-size: 0.82rem;
+      color: var(--c-text-muted);
+      margin-bottom: 30px;
+      line-height: 1.7;
+    }
+
+    /* Tile Calculator */
+    .calc-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .calc-group { display: flex; flex-direction: column; gap: 6px; }
+    .calc-group.full { grid-column: 1 / -1; }
+    .calc-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+    }
+    .calc-input, .calc-select {
+      background: var(--c-bg2);
+      border: 1px solid var(--c-border);
+      color: var(--c-text);
+      padding: 12px 16px;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      transition: border-color var(--trans);
+      width: 100%;
+    }
+    .calc-input:focus, .calc-select:focus {
+      outline: none;
+      border-color: var(--c-gold);
+    }
+    .calc-select option { background: var(--c-bg2); }
+    .calc-result {
+      background: var(--c-bg3);
+      border: 1px solid var(--c-gold);
+      padding: 20px;
+      margin-top: 16px;
+      display: none;
+    }
+    .calc-result.visible { display: block; }
+    .calc-result-num {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      color: var(--c-gold);
+      line-height: 1;
+    }
+    .calc-result-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+    }
+
+    /* Blog grid */
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 60px;
+    }
+    .blog-card {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      overflow: hidden;
+      transition: all var(--trans);
+      cursor: pointer;
+    }
+    .blog-card:hover { border-color: rgba(201,168,76,0.4); }
+    .blog-img {
+      height: 160px;
+      background: linear-gradient(135deg, #1c1a16, #2a2820);
+      position: relative;
+    }
+    .blog-img::after {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 29px, rgba(201,168,76,0.06) 30px),
+        repeating-linear-gradient(90deg, transparent, transparent 29px, rgba(201,168,76,0.06) 30px);
+      background-size: 30px 30px;
+    }
+    .blog-body { padding: 24px; }
+    .blog-cat {
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      color: var(--c-gold);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .blog-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: var(--c-white);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    .blog-excerpt {
+      font-size: 0.78rem;
+      color: var(--c-text-muted);
+      line-height: 1.6;
+    }
+
+    /* Video grid */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .video-card {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all var(--trans);
+    }
+    .video-card:hover { border-color: rgba(201,168,76,0.4); }
+    .video-thumb {
+      height: 180px;
+      background: linear-gradient(135deg, #1a1a24, #2a2a38);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .play-btn {
+      width: 60px; height: 60px;
+      border: 2px solid var(--c-gold);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      color: var(--c-gold);
+      transition: all var(--trans);
+    }
+    .video-card:hover .play-btn {
+      background: var(--c-gold);
+      color: var(--c-bg);
+    }
+    .video-info { padding: 20px; }
+    .video-title {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      color: var(--c-white);
+      margin-bottom: 8px;
+    }
+    .video-duration {
+      font-size: 0.68rem;
+      color: var(--c-text-dim);
+      letter-spacing: 0.1em;
+    }
+
+    /* =========================================
+       CONTACT PAGE
+    ========================================= */
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      padding: 80px 8vw;
+    }
+    .contact-info { padding-top: 20px; }
+    .contact-detail {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+    .contact-icon {
+      width: 44px; height: 44px;
+      border: 1px solid var(--c-gold);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 1rem;
+      color: var(--c-gold);
+    }
+    .contact-detail-title {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--c-text-dim);
+      margin-bottom: 6px;
+    }
+    .contact-detail-value {
+      font-size: 0.9rem;
+      color: var(--c-text);
+      line-height: 1.5;
+    }
+    .contact-detail-value a {
+      color: var(--c-gold);
+      transition: color var(--trans);
+    }
+    .contact-detail-value a:hover { color: var(--c-gold-light); }
+    .map-embed {
+      width: 100%;
+      height: 360px;
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      position: relative;
+      overflow: hidden;
+    }
+    .map-embed iframe {
+      width: 100%; height: 100%;
+      border: none;
+      filter: invert(1) hue-rotate(180deg) saturate(0.5);
+    }
+    .map-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      color: var(--c-text-dim);
+    }
+    .map-placeholder-icon { font-size: 2rem; color: var(--c-gold); }
+    .contact-form {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      padding: 48px;
+    }
+    .form-title {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: var(--c-white);
+      margin-bottom: 32px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+    }
+    .form-input, .form-textarea {
+      background: var(--c-bg2);
+      border: 1px solid var(--c-border);
+      color: var(--c-text);
+      padding: 14px 18px;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      transition: border-color var(--trans);
+      width: 100%;
+    }
+    .form-input:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--c-gold);
+    }
+    .form-textarea { resize: vertical; min-height: 120px; }
+    .form-success {
+      display: none;
+      padding: 16px 20px;
+      background: rgba(201,168,76,0.1);
+      border: 1px solid var(--c-gold);
+      color: var(--c-gold);
+      font-size: 0.82rem;
+      margin-top: 16px;
+    }
+    .form-success.visible { display: block; }
+
+    /* =========================================
+       FOOTER
+    ========================================= */
+    footer {
+      background: var(--c-bg2);
+      border-top: 1px solid var(--c-border);
+      padding: 80px 8vw 40px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 60px;
+    }
+    .footer-brand {}
+    .footer-brand-name {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 300;
+      color: var(--c-white);
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+    .footer-brand-sub {
+      font-size: 0.6rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--c-gold);
+      margin-bottom: 20px;
+    }
+    .footer-brand-desc {
+      font-size: 0.82rem;
+      color: var(--c-text-dim);
+      line-height: 1.7;
+      max-width: 280px;
+    }
+    .footer-col-title {
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--c-gold);
+      margin-bottom: 24px;
+    }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-link {
+      font-size: 0.8rem;
+      color: var(--c-text-dim);
+      transition: color var(--trans);
+      cursor: pointer;
+    }
+    .footer-link:hover { color: var(--c-gold); }
+    .footer-bottom {
+      border-top: 1px solid var(--c-border);
+      padding-top: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+    .footer-copy {
+      font-size: 0.7rem;
+      color: var(--c-text-dim);
+      letter-spacing: 0.08em;
+    }
+    .footer-socials {
+      display: flex;
+      gap: 14px;
+    }
+    .social-link {
+      width: 34px; height: 34px;
+      border: 1px solid var(--c-border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--c-text-dim);
+      font-size: 0.85rem;
+      transition: all var(--trans);
+      cursor: pointer;
+    }
+    .social-link:hover {
+      border-color: var(--c-gold);
+      color: var(--c-gold);
+    }
+
+    /* =========================================
+       ANIMATIONS
+    ========================================= */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    @keyframes scrollAnim {
+      0%, 100% { opacity: 1; transform: scaleY(1); transform-origin: top; }
+      50% { opacity: 0.3; transform: scaleY(0.5); transform-origin: top; }
+    }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* =========================================
+       RESPONSIVE
+    ========================================= */
+    @media (max-width: 1024px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .categories-grid { grid-template-columns: 1fr 1fr; }
+      .catalogue-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      :root { --nav-h: 64px; }
+      .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .hero-content { padding: 0 6vw; }
+      .categories-grid { grid-template-columns: 1fr; }
+      .special-grid { grid-template-columns: 1fr; }
+      .stats-strip { grid-template-columns: repeat(2, 1fr); }
+      .stat-item:nth-child(2) { border-right: none; }
+      .expert-grid { grid-template-columns: 1fr; }
+      .catalogue-grid { grid-template-columns: 1fr; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .video-grid { grid-template-columns: 1fr; }
+      .contact-layout { grid-template-columns: 1fr; gap: 40px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .expert-tools { grid-template-columns: 1fr; }
+      .calc-form { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      section { padding: 70px 6vw; }
+      .page-hero { height: 280px; }
+      .compare-bar-items { display: none; }
+    }
+    @media (max-width: 480px) {
+      .hero-actions { flex-direction: column; align-items: flex-start; }
+      .stats-strip { grid-template-columns: 1fr 1fr; }
+      .section-header { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* =========================================
+       MISC UTILITY
+    ========================================= */
+    .gold { color: var(--c-gold); }
+    .text-center { text-align: center; }
+    .mt-40 { margin-top: 40px; }
+    .pt-nav { padding-top: var(--nav-h); }
+    .no-scroll { overflow: hidden; }
+    .inline-flex { display: inline-flex; align-items: center; gap: 8px; }
+
+    /* Page transition */
+    .page-transition {
+      animation: fadeIn 0.4s ease;
+    }
+
+    /* Active nav highlight */
+    .nav-link[data-page].active { color: var(--c-gold); }
+  </style>
+</head>
+<body>
+
+<!-- =========================================
+     NAVIGATION
+========================================= -->
+<nav id="navbar">
+  <div class="nav-logo" onclick="showPage('home')">
+    <div class="nav-logo-icon">
+      <span class="nav-logo-letter">T</span>
+    </div>
+    <div class="nav-logo-text">
+      <div class="nav-logo-name">TERRA LUXE</div>
+      <div class="nav-logo-tagline">Premium Tiles &amp; Furnishings</div>
+    </div>
+  </div>
+
+  <ul class="nav-links">
+    <li><a class="nav-link" onclick="showPage('home')" data-page="home">Home</a></li>
+
+    <li class="nav-item">
+      <a class="nav-link" onclick="showPage('wall-tiles')" data-page="wall-tiles">
+        Wall Tiles <span class="nav-arrow"></span>
+      </a>
+      <div class="nav-dropdown">
+        <a onclick="showSubPage('wall-tiles','bathroom')">Bathroom Wall Tiles</a>
+        <a onclick="showSubPage('wall-tiles','kitchen')">Kitchen Wall Tiles</a>
+        <a onclick="showSubPage('wall-tiles','outdoor')">Outdoor Wall Tiles</a>
+        <a onclick="showSubPage('wall-tiles','living-room')">Living Room Wall Tiles</a>
+        <a onclick="showSubPage('wall-tiles','bedroom')">Bedroom Wall Tiles</a>
+        <a onclick="showSubPage('wall-tiles','commercial')">Commercial Spaces</a>
+      </div>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" onclick="showPage('floor-tiles')" data-page="floor-tiles">
+        Floor Tiles <span class="nav-arrow"></span>
+      </a>
+      <div class="nav-dropdown">
+        <a onclick="showSubPage('floor-tiles','bathroom')">Bathroom Floor Tiles</a>
+        <a onclick="showSubPage('floor-tiles','kitchen')">Kitchen Floor Tiles</a>
+        <a onclick="showSubPage('floor-tiles','outdoor')">Outdoor Floor Tiles</a>
+        <a onclick="showSubPage('floor-tiles','living-room')">Living Room Floor Tiles</a>
+        <a onclick="showSubPage('floor-tiles','bedroom')">Bedroom Floor Tiles</a>
+        <a onclick="showSubPage('floor-tiles','commercial')">Commercial Spaces</a>
+      </div>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" onclick="showPage('special-tiles')" data-page="special-tiles">
+        Special Tiles <span class="nav-arrow"></span>
+      </a>
+      <div class="nav-dropdown">
+        <a onclick="showSubPage('special-tiles','germ-free')">Germ Free Tiles</a>
+        <a onclick="showSubPage('special-tiles','tac')">TAC Tiles</a>
+        <a onclick="showSubPage('special-tiles','anti-static')">Anti-Static Tiles</a>
+        <a onclick="showSubPage('special-tiles','cool-roof')">Cool Roof Tiles</a>
+      </div>
+    </li>
+
+    <li><a class="nav-link" onclick="showPage('catalogue')" data-page="catalogue">E-Catalogue</a></li>
+    <li><a class="nav-link" onclick="showPage('expert')" data-page="expert">Expert Corner</a></li>
+    <li><a class="nav-link" onclick="showPage('contact')" data-page="contact">Contact</a></li>
+  </ul>
+
+  <a class="nav-cta" onclick="showPage('catalogue')">Download Catalogue</a>
+  <div class="hamburger" id="hamburger" onclick="toggleMobile()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a onclick="showPage('home');closeMobile()">Home</a>
+  <div class="mobile-section-title">Wall Tiles</div>
+  <a onclick="showSubPage('wall-tiles','bathroom');closeMobile()">Bathroom Wall Tiles</a>
+  <a onclick="showSubPage('wall-tiles','kitchen');closeMobile()">Kitchen Wall Tiles</a>
+  <a onclick="showSubPage('wall-tiles','outdoor');closeMobile()">Outdoor Wall Tiles</a>
+  <a onclick="showSubPage('wall-tiles','living-room');closeMobile()">Living Room Wall Tiles</a>
+  <a onclick="showSubPage('wall-tiles','bedroom');closeMobile()">Bedroom Wall Tiles</a>
+  <a onclick="showSubPage('wall-tiles','commercial');closeMobile()">Commercial Spaces</a>
+  <div class="mobile-section-title">Floor Tiles</div>
+  <a onclick="showSubPage('floor-tiles','bathroom');closeMobile()">Bathroom Floor Tiles</a>
+  <a onclick="showSubPage('floor-tiles','kitchen');closeMobile()">Kitchen Floor Tiles</a>
+  <a onclick="showSubPage('floor-tiles','outdoor');closeMobile()">Outdoor Floor Tiles</a>
+  <a onclick="showSubPage('floor-tiles','living-room');closeMobile()">Living Room Floor Tiles</a>
+  <a onclick="showSubPage('floor-tiles','bedroom');closeMobile()">Bedroom Floor Tiles</a>
+  <a onclick="showSubPage('floor-tiles','commercial');closeMobile()">Commercial Spaces</a>
+  <div class="mobile-section-title">Special Tiles</div>
+  <a onclick="showSubPage('special-tiles','germ-free');closeMobile()">Germ Free Tiles</a>
+  <a onclick="showSubPage('special-tiles','tac');closeMobile()">TAC Tiles</a>
+  <a onclick="showSubPage('special-tiles','anti-static');closeMobile()">Anti-Static Tiles</a>
+  <a onclick="showSubPage('special-tiles','cool-roof');closeMobile()">Cool Roof Tiles</a>
+  <a onclick="showPage('catalogue');closeMobile()">E-Catalogue</a>
+  <a onclick="showPage('expert');closeMobile()">Expert Corner</a>
+  <a onclick="showPage('contact');closeMobile()">Contact</a>
+</div>
+
+
+<!-- =========================================
+     PAGE: HOME
+========================================= -->
+<div id="page-home" class="page active page-transition">
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-slides">
+      <div class="hero-slide active">
+        <div class="cat-bg-wall hero-slide-bg"></div>
+      </div>
+      <div class="hero-slide">
+        <div class="cat-bg-floor hero-slide-bg"></div>
+      </div>
+      <div class="hero-slide">
+        <div class="cat-bg-special hero-slide-bg"></div>
+      </div>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Premium Tiles &amp; Furnishings</div>
+      <h1 class="hero-title">
+        Where <em>Design</em><br>Meets Precision
+      </h1>
+      <p class="hero-subtitle">
+        Curated collections of wall tiles, floor tiles, and specialty surfaces for residential and commercial spaces. Craftsmanship at every scale.
+      </p>
+      <div class="hero-actions">
+        <a class="btn-primary" onclick="showPage('wall-tiles')">Explore Collections</a>
+        <a class="btn-secondary" onclick="showPage('catalogue')">Download Catalogue</a>
+      </div>
+    </div>
+    <div class="hero-indicators">
+      <div class="hero-dot active" onclick="goToSlide(0)"></div>
+      <div class="hero-dot" onclick="goToSlide(1)"></div>
+      <div class="hero-dot" onclick="goToSlide(2)"></div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span class="hero-scroll-text">Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-strip">
+    <div class="stat-item">
+      <div class="stat-number">2400<span style="font-size:1.5rem">+</span></div>
+      <div class="stat-label">Tile Designs</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">38</div>
+      <div class="stat-label">Years of Excellence</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">120<span style="font-size:1.5rem">+</span></div>
+      <div class="stat-label">Countries Served</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">98<span style="font-size:1.5rem">%</span></div>
+      <div class="stat-label">Customer Satisfaction</div>
+    </div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <section id="categories" style="padding:0">
+    <div class="categories-grid">
+      <div class="cat-card" onclick="showPage('wall-tiles')">
+        <div class="cat-card-bg cat-bg-wall"></div>
+        <div class="cat-overlay"></div>
+        <div class="cat-content">
+          <div class="cat-icon">◫</div>
+          <div class="cat-title">Wall Tiles</div>
+          <div class="cat-count">6 Subcategories · 400+ Designs</div>
+        </div>
+        <div class="cat-arrow">→</div>
+      </div>
+      <div class="cat-card" onclick="showPage('floor-tiles')">
+        <div class="cat-card-bg cat-bg-floor"></div>
+        <div class="cat-overlay"></div>
+        <div class="cat-content">
+          <div class="cat-icon">⊞</div>
+          <div class="cat-title">Floor Tiles</div>
+          <div class="cat-count">6 Subcategories · 600+ Designs</div>
+        </div>
+        <div class="cat-arrow">→</div>
+      </div>
+      <div class="cat-card" onclick="showPage('special-tiles')">
+        <div class="cat-card-bg cat-bg-special"></div>
+        <div class="cat-overlay"></div>
+        <div class="cat-content">
+          <div class="cat-icon">✦</div>
+          <div class="cat-title">Special Tiles</div>
+          <div class="cat-count">4 Technologies · Innovation Series</div>
+        </div>
+        <div class="cat-arrow">→</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPECIAL TILES FEATURE -->
+  <section id="special-tiles" style="background:var(--c-bg3)">
+    <div class="section-header fade-in">
+      <div>
+        <div class="section-eyebrow">Innovation Series</div>
+        <h2 class="section-title">Special <em>Tile</em> Technologies</h2>
+      </div>
+      <p class="section-desc">Engineered for performance. Designed for people. Our specialty tiles go beyond aesthetics to deliver function, safety, and sustainability.</p>
+    </div>
+    <div class="special-grid">
+      <div class="special-card fade-in" onclick="showSubPage('special-tiles','germ-free')">
+        <div class="special-number">01</div>
+        <div class="special-card-title">Germ Free Tiles</div>
+        <div class="special-card-desc">Anti-bacterial and anti-viral surfaces for kitchen countertops and bathroom walls. Clinically tested formulation inhibits 99.9% of harmful microorganisms.</div>
+        <div class="special-badge">Anti-Bacterial · Anti-Viral</div>
+      </div>
+      <div class="special-card fade-in" onclick="showSubPage('special-tiles','tac')">
+        <div class="special-number">02</div>
+        <div class="special-card-title">TAC Tiles</div>
+        <div class="special-card-desc">Tactile non-slip indicator tiles engineered for visually challenged users. Compliant with international accessibility standards for public spaces.</div>
+        <div class="special-badge">Accessibility · Non-Slip</div>
+      </div>
+      <div class="special-card fade-in" onclick="showSubPage('special-tiles','anti-static')">
+        <div class="special-number">03</div>
+        <div class="special-card-title">Anti-Static Tiles</div>
+        <div class="special-card-desc">Electrostatic discharge (ESD) control surfaces for data centers, clean rooms, hospitals, and industrial environments sensitive to static electricity.</div>
+        <div class="special-badge">ESD Control · Industrial</div>
+      </div>
+      <div class="special-card fade-in" onclick="showSubPage('special-tiles','cool-roof')">
+        <div class="special-number">04</div>
+        <div class="special-card-title">Cool Roof Tiles</div>
+        <div class="special-card-desc">Heat-reflective ceramic tiles for terraces, balconies, and courtyards. Reduces surface temperature by up to 30°C compared to standard tiles.</div>
+        <div class="special-badge">Heat Resistant · Solar Reflective</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERT CORNER PREVIEW -->
+  <section id="expert-preview">
+    <div class="section-header fade-in">
+      <div>
+        <div class="section-eyebrow">Expert Corner</div>
+        <h2 class="section-title">Design <em>Knowledge</em><br>at Your Fingertips</h2>
+      </div>
+      <a class="btn-outline" onclick="showPage('expert')">View All Resources</a>
+    </div>
+    <div class="expert-grid">
+      <div class="expert-card fade-in" onclick="showPage('expert')">
+        <div class="expert-type">📄 Buying Guide</div>
+        <div class="expert-card-title">How to Choose the Right Tile Size for Every Room</div>
+        <div class="expert-card-excerpt">Tile size dramatically impacts the perception of space. Learn how to select formats that suit your room dimensions and design goals.</div>
+        <div class="expert-card-link">Read Guide →</div>
+      </div>
+      <div class="expert-card fade-in" onclick="showPage('expert')">
+        <div class="expert-type">🎬 Video</div>
+        <div class="expert-card-title">Tile Installation Masterclass: Professional Techniques</div>
+        <div class="expert-card-excerpt">Watch our master tiler walk through layout planning, adhesive selection, and grouting for a flawless result.</div>
+        <div class="expert-card-link">Watch Video →</div>
+      </div>
+      <div class="expert-card fade-in" onclick="showPage('expert')">
+        <div class="expert-type">🔢 Calculator</div>
+        <div class="expert-card-title">Tile Calculator — Estimate Your Project Requirements</div>
+        <div class="expert-card-excerpt">Enter your room dimensions and tile size to instantly calculate how many tiles you need, including waste allowance.</div>
+        <div class="expert-card-link">Use Calculator →</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATALOGUE CTA -->
+  <section id="catalogue-section">
+    <div class="section-header fade-in">
+      <div>
+        <div class="section-eyebrow">Digital Catalogue</div>
+        <h2 class="section-title">Browse Our <em>Complete</em><br>Product Range</h2>
+      </div>
+      <p class="section-desc">Download our comprehensive catalogues featuring glazed vitrified, ceramic, and polished vitrified tile collections.</p>
+    </div>
+    <div class="catalogue-grid">
+      <div class="catalogue-card fade-in" onclick="downloadCatalogue('gvt')">
+        <div class="catalogue-icon">◈</div>
+        <div class="catalogue-title">Glazed Vitrified Tiles</div>
+        <div class="catalogue-desc">High-gloss, moisture-resistant tiles with vivid digital printing. Ideal for walls, feature areas, and premium floors.</div>
+        <div class="btn-outline">Download PDF ↓</div>
+      </div>
+      <div class="catalogue-card fade-in" onclick="downloadCatalogue('ceramic')">
+        <div class="catalogue-icon">⬡</div>
+        <div class="catalogue-title">Ceramic Tiles</div>
+        <div class="catalogue-desc">Versatile, cost-effective, and beautiful. Our ceramic range spans 300+ designs for every room and budget level.</div>
+        <div class="btn-outline">Download PDF ↓</div>
+      </div>
+      <div class="catalogue-card fade-in" onclick="downloadCatalogue('pvt')">
+        <div class="catalogue-icon">◇</div>
+        <div class="catalogue-title">Polished Vitrified Tiles</div>
+        <div class="catalogue-desc">Mirror-finish tiles with stone-like depth. Low maintenance, ultra-durable, and refined for luxury interiors.</div>
+        <div class="btn-outline">Download PDF ↓</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER INCLUDED -->
+</div><!-- end home page -->
+
+
+<!-- =========================================
+     PAGE: WALL TILES
+========================================= -->
+<div id="page-wall-tiles" class="page page-transition">
+  <div style="padding-top: var(--nav-h)">
+    <div class="page-hero">
+      <div class="page-hero-bg"></div>
+      <div class="page-hero-pattern"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="page-hero-content">
+        <div class="page-breadcrumb">Home / <span>Wall Tiles</span></div>
+        <h1 class="page-hero-title">Wall <em>Tiles</em></h1>
+      </div>
+    </div>
+    <div class="sub-tabs" id="wall-tabs">
+      <div class="sub-tab active" onclick="switchSubTab('wall','bathroom',this)">Bathroom</div>
+      <div class="sub-tab" onclick="switchSubTab('wall','kitchen',this)">Kitchen</div>
+      <div class="sub-tab" onclick="switchSubTab('wall','outdoor',this)">Outdoor</div>
+      <div class="sub-tab" onclick="switchSubTab('wall','living-room',this)">Living Room</div>
+      <div class="sub-tab" onclick="switchSubTab('wall','bedroom',this)">Bedroom</div>
+      <div class="sub-tab" onclick="switchSubTab('wall','commercial',this)">Commercial</div>
+    </div>
+    <div class="products-section">
+      <div class="section-eyebrow" id="wall-section-title">Bathroom Wall Tiles</div>
+      <h2 class="section-title" id="wall-section-sub">Elegant surfaces for <em>every space</em></h2>
+      <div class="products-grid" id="wall-products-grid"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- =========================================
+     PAGE: FLOOR TILES
+========================================= -->
+<div id="page-floor-tiles" class="page page-transition">
+  <div style="padding-top: var(--nav-h)">
+    <div class="page-hero" style="background: linear-gradient(135deg, #101820, #1a2a35)">
+      <div class="page-hero-bg" style="background: linear-gradient(135deg, #101820, #1a2a35)"></div>
+      <div class="page-hero-pattern"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="page-hero-content">
+        <div class="page-breadcrumb">Home / <span>Floor Tiles</span></div>
+        <h1 class="page-hero-title">Floor <em>Tiles</em></h1>
+      </div>
+    </div>
+    <div class="sub-tabs" id="floor-tabs">
+      <div class="sub-tab active" onclick="switchSubTab('floor','bathroom',this)">Bathroom</div>
+      <div class="sub-tab" onclick="switchSubTab('floor','kitchen',this)">Kitchen</div>
+      <div class="sub-tab" onclick="switchSubTab('floor','outdoor',this)">Outdoor</div>
+      <div class="sub-tab" onclick="switchSubTab('floor','living-room',this)">Living Room</div>
+      <div class="sub-tab" onclick="switchSubTab('floor','bedroom',this)">Bedroom</div>
+      <div class="sub-tab" onclick="switchSubTab('floor','commercial',this)">Commercial</div>
+    </div>
+    <div class="products-section">
+      <div class="section-eyebrow" id="floor-section-title">Bathroom Floor Tiles</div>
+      <h2 class="section-title" id="floor-section-sub">Durable beauty <em>underfoot</em></h2>
+      <div class="products-grid" id="floor-products-grid"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- =========================================
+     PAGE: SPECIAL TILES
+========================================= -->
+<div id="page-special-tiles" class="page page-transition">
+  <div style="padding-top: var(--nav-h)">
+    <div class="page-hero" style="background: linear-gradient(135deg, #150c18, #201428)">
+      <div class="page-hero-bg" style="background: linear-gradient(135deg, #150c18, #201428)"></div>
+      <div class="page-hero-pattern"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="page-hero-content">
+        <div class="page-breadcrumb">Home / <span>Special Tiles</span></div>
+        <h1 class="page-hero-title">Special <em>Tiles</em></h1>
+      </div>
+    </div>
+    <div class="sub-tabs" id="special-tabs">
+      <div class="sub-tab active" onclick="switchSubTab('special','germ-free',this)">Germ Free</div>
+      <div class="sub-tab" onclick="switchSubTab('special','tac',this)">TAC Tiles</div>
+      <div class="sub-tab" onclick="switchSubTab('special','anti-static',this)">Anti-Static</div>
+      <div class="sub-tab" onclick="switchSubTab('special','cool-roof',this)">Cool Roof</div>
+    </div>
+    <div class="products-section">
+      <div class="section-eyebrow" id="special-section-title">Germ Free Tiles</div>
+      <h2 class="section-title" id="special-section-sub">Innovation <em>engineered</em> for life</h2>
+      <div id="special-desc" style="max-width:640px;font-size:0.9rem;color:var(--c-text-muted);line-height:1.8;margin-bottom:40px">
+        Anti-bacterial and anti-viral tiles featuring a proprietary ionic silver glaze that inhibits microbial growth. Perfect for kitchens, hospitals, food processing, and healthcare facilities.
+      </div>
+      <div class="products-grid" id="special-products-grid"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- =========================================
+     PAGE: CATALOGUE
+========================================= -->
+<div id="page-catalogue" class="page page-transition">
+  <div style="padding-top: var(--nav-h)">
+    <div class="page-hero">
+      <div class="page-hero-bg"></div>
+      <div class="page-hero-pattern"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="page-hero-content">
+        <div class="page-breadcrumb">Home / <span>E-Catalogue</span></div>
+        <h1 class="page-hero-title">Digital <em>Catalogue</em></h1>
+      </div>
+    </div>
+    <section style="background:var(--c-bg)">
+      <div class="section-eyebrow">Downloadable Resources</div>
+      <h2 class="section-title">Complete <em>Product</em> Catalogues</h2>
+      <p class="section-desc" style="margin-bottom:60px">Browse or download our comprehensive tile catalogues. Each catalogue contains detailed specifications, dimensions, finish options, and installation guidelines.</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:60px">
+
+        <div style="background:var(--c-surface);border:1px solid var(--c-border);padding:40px">
+          <div style="display:flex;align-items:center;gap:20px;margin-bottom:24px">
+            <div class="catalogue-icon" style="margin:0;flex-shrink:0">◈</div>
+            <div>
+              <h3 style="font-family:var(--font-display);font-size:1.4rem;color:var(--c-white);margin-bottom:4px">Glazed Vitrified Tiles</h3>
+              <div style="font-size:0.65rem;letter-spacing:0.15em;color:var(--c-gold);text-transform:uppercase">GVT Collection 2025</div>
+            </div>
+          </div>
+          <p style="font-size:0.82rem;color:var(--c-text-muted);line-height:1.7;margin-bottom:28px">High-definition digitally printed glazed tiles with glass-like finish. Suitable for walls and light-traffic floors. Available in 300×600, 600×600, 600×1200, and 800×1600mm formats.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px">
+            <span class="feat-tag">300×600mm</span>
+            <span class="feat-tag">600×600mm</span>
+            <span class="feat-tag">600×1200mm</span>
+            <span class="feat-tag">Indoor</span>
+            <span class="feat-tag">High Gloss</span>
+          </div>
+          <button class="btn-primary" style="font-size:0.68rem" onclick="downloadCatalogue('gvt')">Download PDF Catalogue ↓</button>
+        </div>
+
+        <div style="background:var(--c-surface);border:1px solid var(--c-border);padding:40px">
+          <div style="display:flex;align-items:center;gap:20px;margin-bottom:24px">
+            <div class="catalogue-icon" style="margin:0;flex-shrink:0">⬡</div>
+            <div>
+              <h3 style="font-family:var(--font-display);font-size:1.4rem;color:var(--c-white);margin-bottom:4px">Ceramic Tiles</h3>
+              <div style="font-size:0.65rem;letter-spacing:0.15em;color:var(--c-gold);text-transform:uppercase">Ceramic Series 2025</div>
+            </div>
+          </div>
+          <p style="font-size:0.82rem;color:var(--c-text-muted);line-height:1.7;margin-bottom:28px">Classic and contemporary ceramic tile designs for walls and floors. Exceptional value with reliable performance for residential and light commercial applications.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px">
+            <span class="feat-tag">250×375mm</span>
+            <span class="feat-tag">300×450mm</span>
+            <span class="feat-tag">300×600mm</span>
+            <span class="feat-tag">Wall & Floor</span>
+            <span class="feat-tag">Matt/Gloss</span>
+          </div>
+          <button class="btn-primary" style="font-size:0.68rem" onclick="downloadCatalogue('ceramic')">Download PDF Catalogue ↓</button>
+        </div>
+
+        <div style="background:var(--c-surface);border:1px solid var(--c-border);padding:40px">
+          <div style="display:flex;align-items:center;gap:20px;margin-bottom:24px">
+            <div class="catalogue-icon" style="margin:0;flex-shrink:0">◇</div>
+            <div>
+              <h3 style="font-family:var(--font-display);font-size:1.4rem;color:var(--c-white);margin-bottom:4px">Polished Vitrified Tiles</h3>
+              <div style="font-size:0.65rem;letter-spacing:0.15em;color:var(--c-gold);text-transform:uppercase">PVT Luxury 2025</div>
+            </div>
+          </div>
+          <p style="font-size:0.82rem;color:var(--c-text-muted);line-height:1.7;margin-bottom:28px">Mirror-polished vitrified tiles with deep stone-like aesthetics. Superior hardness, near-zero water absorption, and unmatched reflective brilliance for luxury floors.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px">
+            <span class="feat-tag">600×600mm</span>
+            <span class="feat-tag">800×800mm</span>
+            <span class="feat-tag">600×1200mm</span>
+            <span class="feat-tag">Mirror Polish</span>
+            <span class="feat-tag">Rectified</span>
+          </div>
+          <button class="btn-primary" style="font-size:0.68rem" onclick="downloadCatalogue('pvt')">Download PDF Catalogue ↓</button>
+        </div>
+
+        <div style="background:var(--c-surface);border:1px solid var(--c-border);padding:40px">
+          <div style="display:flex;align-items:center;gap:20px;margin-bottom:24px">
+            <div class="catalogue-icon" style="margin:0;flex-shrink:0">✦</div>
+            <div>
+              <h3 style="font-family:var(--font-display);font-size:1.4rem;color:var(--c-white);margin-bottom:4px">Special Technology Tiles</h3>
+              <div style="font-size:0.65rem;letter-spacing:0.15em;color:var(--c-gold);text-transform:uppercase">Innovation Catalogue 2025</div>
+            </div>
+          </div>
+          <p style="font-size:0.82rem;color:var(--c-text-muted);line-height:1.7;margin-bottom:28px">Our complete range of special-purpose tiles: Germ Free, TAC, Anti-Static, and Cool Roof. Technical specifications, certifications, and installation guides included.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px">
+            <span class="feat-tag">Germ Free</span>
+            <span class="feat-tag">TAC</span>
+            <span class="feat-tag">Anti-Static</span>
+            <span class="feat-tag">Cool Roof</span>
+          </div>
+          <button class="btn-primary" style="font-size:0.68rem" onclick="downloadCatalogue('special')">Download PDF Catalogue ↓</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+
+<!-- =========================================
+     PAGE: EXPERT CORNER
+========================================= -->
+<div id="page-expert" class="page page-transition">
+  <div style="padding-top: var(--nav-h)">
+    <div class="page-hero" style="background: linear-gradient(135deg, #0a1218, #151e28)">
+      <div class="page-hero-bg" style="background: linear-gradient(135deg, #0a1218, #151e28)"></div>
+      <div class="page-hero-pattern"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="page-hero-content">
+        <div class="page-breadcrumb">Home / <span>Expert Corner</span></div>
+        <h1 class="page-hero-title">Expert <em>Corner</em></h1>
+      </div>
+    </div>
+
+    <!-- TILE CALCULATOR -->
+    <section style="background:var(--c-bg)">
+      <div class="section-eyebrow">Tools</div>
+      <h2 class="section-title" style="margin-bottom:50px">Tile <em>Calculator</em></h2>
+      <div class="expert-tools">
+        <div class="expert-tool-card">
+          <h3 class="expert-tool-title">Calculate Your Requirements</h3>
+          <p class="expert-tool-desc">Enter your room dimensions and tile size to calculate the exact number of tiles required, including a recommended waste allowance.</p>
+          <div class="calc-form">
+            <div class="calc-group">
+              <label class="calc-label">Room Length (m)</label>
+              <input class="calc-input" type="number" id="roomLength" placeholder="e.g. 5.0" step="0.1" min="0.1"/>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label">Room Width (m)</label>
+              <input class="calc-input" type="number" id="roomWidth" placeholder="e.g. 4.0" step="0.1" min="0.1"/>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label">Tile Length (mm)</label>
+              <select class="calc-select" id="tileLength">
+                <option value="300">300mm</option>
+                <option value="400">400mm</option>
+                <option value="600" selected>600mm</option>
+                <option value="800">800mm</option>
+                <option value="1000">1000mm</option>
+                <option value="1200">1200mm</option>
+              </select>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label">Tile Width (mm)</label>
+              <select class="calc-select" id="tileWidth">
+                <option value="300">300mm</option>
+                <option value="400">400mm</option>
+                <option value="600" selected>600mm</option>
+                <option value="800">800mm</option>
+                <option value="1000">1000mm</option>
+                <option value="1200">1200mm</option>
+              </select>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label">Waste Allowance</label>
+              <select class="calc-select" id="wastePercent">
+                <option value="5">5% (Simple Room)</option>
+                <option value="10" selected>10% (Standard)</option>
+                <option value="15">15% (Complex Layout)</option>
+                <option value="20">20% (Diagonal Pattern)</option>
+              </select>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label">Area Type</label>
+              <select class="calc-select" id="areaType">
+                <option value="floor">Floor</option>
+                <option value="wall">Single Wall</option>
+                <option value="all-walls">All Walls (4-sided)</option>
+              </select>
+            </div>
+            <div class="calc-group full">
+              <button class="btn-primary" style="width:fit-content" onclick="calculateTiles()">Calculate Tiles →</button>
+            </div>
+          </div>
+          <div class="calc-result" id="calcResult">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px">
+              <div>
+                <div class="calc-result-num" id="tilesNeeded">0</div>
+                <div class="calc-result-label">Tiles Required</div>
+              </div>
+              <div>
+                <div class="calc-result-num" id="areaCalc">0 m²</div>
+                <div class="calc-result-label">Total Area</div>
+              </div>
+              <div>
+                <div class="calc-result-num" id="boxesNeeded">0</div>
+                <div class="calc-result-label">Approx. Boxes (4/box)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:var(--c-surface);border:1px solid var(--c-border);padding:40px">
+          <h3 class="expert-tool-title">Buying Guides</h3>
+          <p class="expert-tool-desc">Expert advice to help you make confident tile selection decisions.</p>
+          <div style="display:flex;flex-direction:column;gap:0">
+            <div style="padding:18px 0;border-bottom:1px solid var(--c-border);cursor:pointer" onclick="alert('Guide: Full PDF would open here')">
+              <div style="font-size:0.62rem;letter-spacing:0.18em;color:var(--c-gold);text-transform:uppercase;margin-bottom:6px">Tile Selection</div>
+              <div style="font-family:var(--font-display);font-size:1.05rem;color:var(--c-white);margin-bottom:4px">Choosing the Right Tile Size for Every Room</div>
+              <div style="font-size:0.75rem;color:var(--c-text-dim)">10 min read · PDF Download available</div>
+            </div>
+            <div style="padding:18px 0;border-bottom:1px solid var(--c-border);cursor:pointer" onclick="alert('Guide: Full PDF would open here')">
+              <div style="font-size:0.62rem;letter-spacing:0.18em;color:var(--c-gold);text-transform:uppercase;margin-bottom:6px">Installation</div>
+              <div style="font-family:var(--font-display);font-size:1.05rem;color:var(--c-white);margin-bottom:4px">Surface Preparation: The Key to Long-Lasting Tiles</div>
+              <div style="font-size:0.75rem;color:var(--c-text-dim)">8 min read · PDF Download available</div>
+            </div>
+            <div style="padding:18px 0;border-bottom:1px solid var(--c-border);cursor:pointer" onclick="alert('Guide: Full PDF would open here')">
+              <div style="font-size:0.62rem;letter-spacing:0.18em;color:var(--c-gold);text-transform:uppercase;margin-bottom:6px">Maintenance</div>
+              <div style="font-family:var(--font-display);font-size:1.05rem;color:var(--c-white);margin-bottom:4px">Grout Cleaning & Tile Maintenance Masterguide</div>
+              <div style="font-size:0.75rem;color:var(--c-text-dim)">12 min read · PDF Download available</div>
+            </div>
+            <div style="padding:18px 0;cursor:pointer" onclick="alert('Guide: Full PDF would open here')">
+              <div style="font-size:0.62rem;letter-spacing:0.18em;color:var(--c-gold);text-transform:uppercase;margin-bottom:6px">Design</div>
+              <div style="font-family:var(--font-display);font-size:1.05rem;color:var(--c-white);margin-bottom:4px">Tile Patterns & Laying Styles: A Visual Encyclopedia</div>
+              <div style="font-size:0.75rem;color:var(--c-text-dim)">15 min read · PDF Download available</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOG -->
+    <section style="background:var(--c-bg2)">
+      <div class="section-eyebrow">Articles</div>
+      <h2 class="section-title" style="margin-bottom:50px">Design <em>Insights</em> &amp; Trends</h2>
+      <div class="blog-grid">
+        <div class="blog-card">
+          <div class="blog-img"></div>
+          <div class="blog-body">
+            <div class="blog-cat">Interior Design</div>
+            <div class="blog-title">Japandi Interiors: Minimalism Meets Warmth</div>
+            <div class="blog-excerpt">Explore the tile palettes and textures that define the Japandi aesthetic — where Japanese minimalism meets Scandinavian coziness.</div>
+          </div>
+        </div>
+        <div class="blog-card">
+          <div class="blog-img"></div>
+          <div class="blog-body">
+            <div class="blog-cat">Trends 2025</div>
+            <div class="blog-title">Large Format Tiles: Why Bigger is Better</div>
+            <div class="blog-excerpt">600×1200 and 800×1600mm tiles are reshaping interiors. Fewer grout lines, expansive visuals, and seamless flows between spaces.</div>
+          </div>
+        </div>
+        <div class="blog-card">
+          <div class="blog-img"></div>
+          <div class="blog-body">
+            <div class="blog-cat">Technology</div>
+            <div class="blog-title">The Science Behind Anti-Bacterial Tile Glazes</div>
+            <div class="blog-excerpt">How silver-ion technology is permanently embedded in tile glazes to create surfaces that actively resist bacteria — without any coatings to wear off.</div>
+          </div>
+        </div>
+        <div class="blog-card">
+          <div class="blog-img"></div>
+          <div class="blog-body">
+            <div class="blog-cat">Outdoor Spaces</div>
+            <div class="blog-title">Terrace Transformation: Cool Roof Tiles Guide</div>
+            <div class="blog-excerpt">Rooftop terraces absorb and radiate intense heat. Cool Roof Tiles reflect up to 80% of solar radiation, reducing surface temperatures dramatically.</div>
+          </div>
+        </div>
+        <div class="blog-card">
+          <div class="blog-img"></div>
+          <div class="blog-body">
+            <div class="blog-cat">Accessibility</div>
+            <div class="blog-title">Inclusive Design: TAC Tiles in Public Infrastructure</div>
+            <div class="blog-excerpt">Tactile attention coridor tiles are essential for visually impaired navigation. We explore global standards and beautiful implementations.</div>
+          </div>
+        </div>
+        <div class="blog-card">
+          <div class="blog-img"></div>
+          <div class="blog-body">
+            <div class="blog-cat">Installation</div>
+            <div class="blog-title">Pattern Laying: Herringbone, Chevron &amp; Beyond</div>
+            <div class="blog-excerpt">Pattern laying dramatically elevates any tile. Master the geometry, tile count calculations, and installation sequence for complex patterns.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIDEOS -->
+    <section style="background:var(--c-bg)">
+      <div class="section-eyebrow">Video Library</div>
+      <h2 class="section-title" style="margin-bottom:40px">Educational <em>Videos</em></h2>
+      <div class="video-grid">
+        <div class="video-card">
+          <div class="video-thumb">
+            <div class="play-btn">▶</div>
+          </div>
+          <div class="video-info">
+            <div class="video-title">Complete Tile Installation Guide — Beginners to Pro</div>
+            <div class="video-duration">42:18 · Tutorial</div>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb">
+            <div class="play-btn">▶</div>
+          </div>
+          <div class="video-info">
+            <div class="video-title">Grouting Techniques: Clean Lines Every Time</div>
+            <div class="video-duration">18:45 · Technique</div>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb">
+            <div class="play-btn">▶</div>
+          </div>
+          <div class="video-info">
+            <div class="video-title">How Our GVT Tiles Are Manufactured</div>
+            <div class="video-duration">24:30 · Behind the Scenes</div>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb">
+            <div class="play-btn">▶</div>
+          </div>
+          <div class="video-info">
+            <div class="video-title">Exterior Tile Selection for Harsh Climates</div>
+            <div class="video-duration">31:12 · Expert Talk</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+
+<!-- =========================================
+     PAGE: CONTACT
+========================================= -->
+<div id="page-contact" class="page page-transition">
+  <div style="padding-top: var(--nav-h)">
+    <div class="page-hero">
+      <div class="page-hero-bg"></div>
+      <div class="page-hero-pattern"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="page-hero-content">
+        <div class="page-breadcrumb">Home / <span>Contact Us</span></div>
+        <h1 class="page-hero-title">Get In <em>Touch</em></h1>
+      </div>
+    </div>
+
+    <div class="contact-layout">
+      <!-- Info -->
+      <div class="contact-info">
+        <div class="section-eyebrow">Our Location</div>
+        <h2 class="section-title" style="margin-bottom:32px">Visit Our <em>Showroom</em></h2>
+
+        <div class="contact-detail">
+          <div class="contact-icon">📍</div>
+          <div>
+            <div class="contact-detail-title">Address</div>
+            <div class="contact-detail-value">
+              Terra Luxe Tile Gallery<br>
+              Building 12, Industrial Estate,<br>
+              Karachi, Sindh 75600, Pakistan
+            </div>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-icon">✉</div>
+          <div>
+            <div class="contact-detail-title">Email</div>
+            <div class="contact-detail-value">
+              <a href="mailto:sales@terraluxe.com">sales@terraluxe.com</a><br>
+              <a href="mailto:info@terraluxe.com">info@terraluxe.com</a>
+            </div>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-icon">📞</div>
+          <div>
+            <div class="contact-detail-title">Phone</div>
+            <div class="contact-detail-value">
+              <a href="tel:+922132000000">+92 21 3200 0000</a><br>
+              <a href="tel:+923001234567">+92 300 123 4567</a>
+            </div>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-icon">🕐</div>
+          <div>
+            <div class="contact-detail-title">Showroom Hours</div>
+            <div class="contact-detail-value">
+              Mon – Sat: 9:00 AM – 7:00 PM<br>
+              Sunday: 11:00 AM – 5:00 PM
+            </div>
+          </div>
+        </div>
+
+        <!-- Map embed (Google Maps with Karachi) -->
+        <div class="map-embed">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d231965.05830002906!2d66.9970361!3d24.8607343!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb33e06651d4bbf%3A0x9cf92f44555a0c23!2sKarachi%2C%20Karachi%20City%2C%20Sindh%2C%20Pakistan!5e0!3m2!1sen!2s!4v1680000000000!5m2!1sen!2s"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div>
+        <div class="contact-form">
+          <h3 class="form-title">Send Us a Message</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input class="form-input" type="text" placeholder="Ahmad" id="fname"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input class="form-input" type="text" placeholder="Khan" id="lname"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input class="form-input" type="email" placeholder="ahmad@example.com" id="cemail"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone (Optional)</label>
+            <input class="form-input" type="tel" placeholder="+92 300 000 0000" id="cphone"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Enquiry Type</label>
+            <select class="form-input" id="ctype">
+              <option>Product Information</option>
+              <option>Price Quotation</option>
+              <option>Sample Request</option>
+              <option>Bulk Order</option>
+              <option>Technical Consultation</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea class="form-textarea" placeholder="Tell us about your project or enquiry..." id="cmessage"></textarea>
+          </div>
+          <button class="btn-primary" onclick="submitForm()">Send Message →</button>
+          <div class="form-success" id="formSuccess">
+            ✓ Your message has been sent. Our team will contact you within 24 hours.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- =========================================
+     COMPARISON BAR (Fixed)
+========================================= -->
+<div id="compare-bar">
+  <div class="compare-bar-title">Compare:</div>
+  <div class="compare-bar-items">
+    <div class="compare-slot" id="slot-1">— Select product —</div>
+    <div class="compare-slot" id="slot-2">— Select product —</div>
+    <div class="compare-slot" id="slot-3">— Select product —</div>
+  </div>
+  <button class="btn-outline" onclick="openComparison()" id="compare-btn" style="opacity:0.4;pointer-events:none">Compare Now</button>
+  <button onclick="clearComparison()" style="font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--c-text-dim);padding:8px 16px;border:1px solid var(--c-border)">Clear</button>
+</div>
+
+
+<!-- =========================================
+     COMPARISON MODAL
+========================================= -->
+<div class="modal-overlay" id="compareModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeComparison()">✕</button>
+    <div class="modal-title">Product <em style="font-style:italic;color:var(--c-gold-light)">Comparison</em></div>
+    <div id="compare-table-container"></div>
+  </div>
+</div>
+
+
+<!-- =========================================
+     FOOTER (shared)
+========================================= -->
+<footer id="site-footer" style="display:none">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-brand-name">TERRA LUXE</div>
+      <div class="footer-brand-sub">Premium Tiles &amp; Furnishings</div>
+      <p class="footer-brand-desc">Crafting exceptional tile collections for residential and commercial spaces since 1987. Quality, beauty, and innovation in every surface.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Tiles</div>
+      <div class="footer-links">
+        <div class="footer-link" onclick="showPage('wall-tiles')">Wall Tiles</div>
+        <div class="footer-link" onclick="showPage('floor-tiles')">Floor Tiles</div>
+        <div class="footer-link" onclick="showPage('special-tiles')">Special Tiles</div>
+        <div class="footer-link" onclick="showPage('catalogue')">E-Catalogue</div>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Resources</div>
+      <div class="footer-links">
+        <div class="footer-link" onclick="showPage('expert')">Expert Corner</div>
+        <div class="footer-link" onclick="showPage('expert')">Buying Guides</div>
+        <div class="footer-link" onclick="showPage('expert')">Tile Calculator</div>
+        <div class="footer-link" onclick="showPage('expert')">Video Library</div>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <div class="footer-links">
+        <div class="footer-link" onclick="showPage('contact')">Contact Us</div>
+        <div class="footer-link">About Terra Luxe</div>
+        <div class="footer-link">Showroom Locations</div>
+        <div class="footer-link">Careers</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 Terra Luxe Tiles & Furnishings. All rights reserved.</div>
+    <div class="footer-socials">
+      <div class="social-link">in</div>
+      <div class="social-link">f</div>
+      <div class="social-link">tw</div>
+      <div class="social-link">ig</div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================= -->
+<script>
+/* ─────────────────────────────────────────
+   DATA: Products
+───────────────────────────────────────── */
+const wallProducts = {
+  bathroom: [
+    { name: 'Aqua Pearl', size: '300 × 600mm', badge: 'Popular', pattern: 'tile-pattern-marble', tags: ['Water Resistant','Gloss','Rectified'], desc: 'High-gloss marble-effect tile for luxury bathroom walls. Moisture-sealed glaze.' },
+    { name: 'Mist White', size: '300 × 600mm', badge: null, pattern: 'tile-pattern-2', tags: ['Anti-Fungal','Matt','Easy Clean'], desc: 'Soft matte white ceramic with anti-fungal surface treatment.' },
+    { name: 'Anthracite Grid', size: '600 × 600mm', badge: 'New', pattern: 'tile-pattern-6', tags: ['Bold','Matt','Rectified'], desc: 'Dark anthracite with subtle grid texture for dramatic feature walls.' },
+    { name: 'Travertine Ivory', size: '300 × 900mm', badge: null, pattern: 'tile-pattern-1', tags: ['Natural Look','Satin','Large Format'], desc: 'Travertine-inspired surface with fine veining and warm ivory tones.' },
+  ],
+  kitchen: [
+    { name: 'Metro Gloss White', size: '75 × 300mm', badge: 'Classic', pattern: 'tile-pattern-2', tags: ['Splashback','Easy Clean','Gloss'], desc: 'Timeless subway tile for kitchen backsplashes. Brilliant white glaze.' },
+    { name: 'Industrial Slate', size: '300 × 600mm', badge: null, pattern: 'tile-pattern-5', tags: ['Matt','Stain Resistant','Anti-Slip'], desc: 'Slate-look matte tile with textured grip surface for working kitchens.' },
+    { name: 'Herringbone Cream', size: '75 × 225mm', badge: 'Trending', pattern: 'tile-pattern-1', tags: ['Herringbone','Gloss','Classic'], desc: 'Perfect for herringbone installations, this cream gloss tile adds warmth.' },
+    { name: 'Sage Green Zellige', size: '100 × 100mm', badge: 'New', pattern: 'tile-pattern-4', tags: ['Handmade Look','Zellige','Artisan'], desc: 'Zellige-inspired imperfection and depth in a sophisticated sage green.' },
+  ],
+  outdoor: [
+    { name: 'Stone Cladding Grey', size: '300 × 600mm', badge: null, pattern: 'tile-pattern-6', tags: ['Frost Proof','Anti-Slip','UV Resistant'], desc: 'Durable stone-look exterior cladding tile. Tested to -20°C frost resistance.' },
+    { name: 'Rustic Terracotta', size: '300 × 300mm', badge: 'Popular', pattern: 'tile-pattern-3', tags: ['Anti-Slip','Outdoor','Natural'], desc: 'Classic terracotta feel with modern durability for exterior walls and paths.' },
+    { name: 'Lava Stone Black', size: '600 × 600mm', badge: null, pattern: 'tile-pattern-5', tags: ['Volcanic','Anti-Slip','Bold'], desc: 'Bold lava stone texture for dramatic exterior feature walls.' },
+    { name: 'Coastal Pebble Mix', size: '300 × 300mm', badge: 'New', pattern: 'tile-pattern-2', tags: ['Mosaic','Slip Resistant','Natural'], desc: 'Natural pebble mosaic sheet for garden walls and water features.' },
+  ],
+  'living-room': [
+    { name: 'Calacatta Oro', size: '600 × 1200mm', badge: 'Luxury', pattern: 'tile-pattern-marble', tags: ['Marble Look','Polished','Large Format'], desc: 'Stunning Calacatta marble reproduction with gold veining. Floor-to-ceiling impact.' },
+    { name: 'Concrete Pearl', size: '600 × 600mm', badge: null, pattern: 'tile-pattern-6', tags: ['Concrete Look','Matt','Modern'], desc: 'Industrial-refined concrete aesthetic for contemporary living rooms.' },
+    { name: 'Sahara Gold', size: '300 × 600mm', badge: 'Trending', pattern: 'tile-pattern-1', tags: ['Warm Tones','Satin','Feature Wall'], desc: 'Warm golden-ochre tones for statement feature walls.' },
+    { name: 'Midnight Wood', size: '200 × 1000mm', badge: null, pattern: 'tile-pattern-wood', tags: ['Wood Look','Long Format','Matt'], desc: 'Long-format wood-look tile for vertical cladding and accent panels.' },
+  ],
+  bedroom: [
+    { name: 'Powder Blush', size: '300 × 600mm', badge: null, pattern: 'tile-pattern-1', tags: ['Soft','Satin','Feature'], desc: 'Delicate blush-rose satin tile for headboard feature walls.' },
+    { name: 'Dove Grey Linen', size: '300 × 600mm', badge: 'Calm', pattern: 'tile-pattern-2', tags: ['Subtle','Linen Texture','Matt'], desc: 'Soft linen-textured grey for understated, restful bedrooms.' },
+    { name: 'Champagne Arabesque', size: '200 × 200mm', badge: 'New', pattern: 'tile-pattern-1', tags: ['Pattern','Arabesque','Feature'], desc: 'Arabesque-cut champagne tiles for decorative feature walls.' },
+    { name: 'Warm Oak Plank', size: '150 × 600mm', badge: null, pattern: 'tile-pattern-wood', tags: ['Wood Look','Warm','Matt'], desc: 'Warm oak-effect planks bring natural warmth to bedroom walls.' },
+  ],
+  commercial: [
+    { name: 'Corporate White', size: '600 × 1200mm', badge: 'Specification', pattern: 'tile-pattern-2', tags: ['Bulk Available','Rectified','Cleanroom'], desc: 'Large format white specification tile for corporate and retail environments.' },
+    { name: 'Executive Stone', size: '800 × 800mm', badge: null, pattern: 'tile-pattern-6', tags: ['Heavy Duty','Stain Proof','Anti-Slip'], desc: 'High-wear stone-look commercial tile for lobbies and corridors.' },
+    { name: 'Hospitality Marble', size: '600 × 600mm', badge: 'Hotel Grade', pattern: 'tile-pattern-marble', tags: ['Hotel','Luxury','Slip Resistant'], desc: 'Luxury marble-look tile widely used in 5-star hotel interiors.' },
+    { name: 'Retail Terrazzo', size: '600 × 600mm', badge: null, pattern: 'tile-pattern-terrazzo', tags: ['Terrazzo','Retail','Durable'], desc: 'Modern terrazzo patterns ideal for retail floors and feature walls.' },
+  ],
+};
+
+const floorProducts = {
+  bathroom: [
+    { name: 'Slip Guard Marble', size: '300 × 300mm', badge: 'R9 Rated', pattern: 'tile-pattern-marble', tags: ['Anti-Slip','Wet Areas','Matt'], desc: 'Matte marble-look with R9 anti-slip rating for safe wet bathroom floors.' },
+    { name: 'Pebble Mosaic', size: '300 × 300mm', badge: null, pattern: 'tile-pattern-2', tags: ['Mosaic','Grip','Natural'], desc: 'Natural pebble mosaic sheet, ideal for shower floors.' },
+    { name: 'Hexagon White', size: '250mm hex', badge: 'Trending', pattern: 'tile-pattern-2', tags: ['Hexagon','Matt','Timeless'], desc: 'Classic white hexagon matte floor tile for retro and contemporary bathrooms.' },
+    { name: 'Deep Slate Matt', size: '600 × 600mm', badge: null, pattern: 'tile-pattern-6', tags: ['Slate Look','R10','Bold'], desc: 'R10-rated deep slate matt floor tile for stylish wet rooms.' },
+  ],
+  kitchen: [
+    { name: 'Quartzite Stone', size: '600 × 600mm', badge: null, pattern: 'tile-pattern-1', tags: ['Durable','Stain Proof','Natural'], desc: 'Hard-wearing quartzite-look floor tile for busy kitchens and dining areas.' },
+    { name: 'Cement Pattern', size: '200 × 200mm', badge: 'Artisan', pattern: 'tile-pattern-terrazzo', tags: ['Pattern','Encaustic','Retro'], desc: 'Cement-effect encaustic pattern tiles for character kitchen floors.' },
+    { name: 'Warm Travertine', size: '400 × 800mm', badge: 'Popular', pattern: 'tile-pattern-1', tags: ['Warm','Long Format','Matt'], desc: 'Warm travertine floor tile that bridges kitchen and living spaces.' },
+    { name: 'Grigio Industrial', size: '600 × 600mm', badge: null, pattern: 'tile-pattern-6', tags: ['Matt','Industrial','Practical'], desc: 'Neutral grey industrial tile for high-traffic kitchen floors.' },
+  ],
+  outdoor: [
+    { name: 'Sandstone Anti-Slip', size: '600 × 600mm', badge: 'R11 Rated', pattern: 'tile-pattern-1', tags: ['R11','Outdoor','UV Stable'], desc: 'R11-rated sandstone-look outdoor floor tile. Frost-resistant and UV stable.' },
+    { name: 'Granite Effect Black', size: '600 × 600mm', badge: null, pattern: 'tile-pattern-6', tags: ['Granite','Bold','Pool Area'], desc: 'Dark granite-effect tile with textured surface for terraces and pool surrounds.' },
+    { name: 'Natural Cotto', size: '300 × 300mm', badge: 'Classic', pattern: 'tile-pattern-3', tags: ['Cotto','Natural','Courtyard'], desc: 'Traditional cotto-style outdoor tile with natural earth tones.' },
+    { name: 'Timber Deck Porcelain', size: '200 × 1000mm', badge: 'New', pattern: 'tile-pattern-wood', tags: ['Wood Look','Anti-Slip','Long Format'], desc: 'Wood-effect porcelain deck tile — the look of timber without the maintenance.' },
+  ],
+  'living-room': [
+    { name: 'Polished Marble White', size: '800 × 800mm', badge: 'Luxury', pattern: 'tile-pattern-marble', tags: ['Polished','PVT','Reflective'], desc: 'Ultra-polished marble-white PVT for expansive, luminous living floors.' },
+    { name: 'Herringbone Oak', size: '150 × 900mm', badge: 'Trending', pattern: 'tile-pattern-wood', tags: ['Herringbone','Wood Look','Warm'], desc: 'Long wood-look planks laid in herringbone for striking visual drama.' },
+    { name: 'Venetian Terrazzo', size: '600 × 600mm', badge: null, pattern: 'tile-pattern-terrazzo', tags: ['Terrazzo','Modern','Speckle'], desc: 'Contemporary Venetian terrazzo for sophisticated living room floors.' },
+    { name: 'Nero Marquina', size: '600 × 1200mm', badge: 'Bold', pattern: 'tile-pattern-6', tags: ['Black Marble','GVT','Statement'], desc: 'Dramatic black marble with white veining for statement flooring.' },
+  ],
+  bedroom: [
+    { name: 'Warm Beige Plank', size: '200 × 1200mm', badge: 'Cozy', pattern: 'tile-pattern-wood', tags: ['Wood Feel','Warm','Long Format'], desc: 'Soft warm beige wood-look plank tiles for comfortable bedroom floors.' },
+    { name: 'Champagne Polish', size: '600 × 600mm', badge: null, pattern: 'tile-pattern-1', tags: ['Champagne','Polished','Elegant'], desc: 'Light champagne polished tile that reflects morning light beautifully.' },
+    { name: 'Dove Matt Linen', size: '300 × 600mm', badge: null, pattern: 'tile-pattern-2', tags: ['Linen','Soft','Matt'], desc: 'Understated linen-texture tile for a calm, restful bedroom atmosphere.' },
+    { name: 'Pale Oak Herringbone', size: '75 × 300mm', badge: 'New', pattern: 'tile-pattern-wood', tags: ['Herringbone','Oak','Pattern'], desc: 'Pale oak herringbone tile floor — classic pattern in a modern format.' },
+  ],
+  commercial: [
+    { name: 'Heavy Duty Granite', size: '600 × 600mm', badge: 'Class 5', pattern: 'tile-pattern-6', tags: ['Class 5','Heavy Traffic','Commercial'], desc: 'Class 5 PEI-rated tile engineered for the heaviest commercial foot traffic.' },
+    { name: 'Anti-Slip Lobby Stone', size: '800 × 800mm', badge: 'Specification', pattern: 'tile-pattern-2', tags: ['R9','Lobby','Large Format'], desc: 'Premium large-format lobby stone for corporate reception and retail entrance.' },
+    { name: 'Industrial Concrete', size: '600 × 600mm', badge: null, pattern: 'tile-pattern-5', tags: ['Concrete','Warehouse','Tough'], desc: 'Rugged concrete-look tile for warehouses, gyms, and industrial floors.' },
+    { name: 'Retail Wood Plank', size: '200 × 1200mm', badge: 'Trending', pattern: 'tile-pattern-wood', tags: ['Wood Look','Retail','Warm'], desc: 'Warm wood-look planks for retail stores, restaurants, and hospitality.' },
+  ],
+};
+
+const specialProducts = {
+  'germ-free': [
+    { name: 'BioGuard Kitchen White', size: '300 × 600mm', badge: 'Anti-Viral', pattern: 'tile-pattern-2', tags: ['ISO 22196','99.9% Kill Rate','FDA Compliant'], desc: 'Silver-ion glaze eliminates bacteria and viruses on contact. Certified to ISO 22196.' },
+    { name: 'SaniShield Countertop', size: '600 × 600mm', badge: 'Certified', pattern: 'tile-pattern-marble', tags: ['Food Safe','Anti-Bacterial','Seamless'], desc: 'Hygienic countertop tile for food prep surfaces. Smooth, seamless, easy to disinfect.' },
+    { name: 'HygieneGlaze ICU', size: '300 × 600mm', badge: 'Medical Grade', pattern: 'tile-pattern-2', tags: ['Hospital Grade','Anti-Fungal','Joint-Free'], desc: 'Medical-grade hygienic wall tile for ICUs, operating rooms, and clean rooms.' },
+    { name: 'PureWall Glossy', size: '300 × 900mm', badge: null, pattern: 'tile-pattern-2', tags: ['Anti-Mould','Bright White','Long Format'], desc: 'Bright white anti-mould glossy tile for hospital corridors and patient rooms.' },
+  ],
+  tac: [
+    { name: 'TAC Yellow Blister', size: '300 × 300mm', badge: 'Compliant', pattern: 'tile-pattern-1', tags: ['ISO 21542','Tactile','Non-Slip'], desc: 'Standard yellow blister-pattern tactile attention tile. ISO 21542 compliant.' },
+    { name: 'TAC Grey Directional', size: '300 × 300mm', badge: null, pattern: 'tile-pattern-6', tags: ['Ribbed','Directional','Subtle'], desc: 'Grey ribbed directional tile for guidance paths in public spaces.' },
+    { name: 'TAC Granite Blend', size: '300 × 300mm', badge: 'Architect Fav', pattern: 'tile-pattern-2', tags: ['Aesthetic','ADA','Transit'], desc: 'Granite-blend tactile tile that integrates aesthetically with premium public spaces.' },
+    { name: 'TAC Safety Red', size: '300 × 300mm', badge: 'Warning', pattern: 'tile-pattern-5', tags: ['Warning Zone','Red','High Visibility'], desc: 'High-visibility red tactile tile for hazard warning zones near platforms and drops.' },
+  ],
+  'anti-static': [
+    { name: 'ESD Control Grey', size: '600 × 600mm', badge: 'ESD Rated', pattern: 'tile-pattern-6', tags: ['<1MΩ','Data Center','Clean Room'], desc: 'Conductive tile meeting IEC 61340 ESD standards for data centers.' },
+    { name: 'StaticSafe White', size: '600 × 600mm', badge: 'Certified', pattern: 'tile-pattern-2', tags: ['Clean Room','Anti-Static','Pharmaceutical'], desc: 'White anti-static tile for pharmaceutical clean rooms and sensitive labs.' },
+    { name: 'ESD Industrial Black', size: '600 × 600mm', badge: null, pattern: 'tile-pattern-5', tags: ['Manufacturing','Heavy Duty','ESD'], desc: 'Durable black ESD tile for electronics manufacturing and assembly floors.' },
+    { name: 'ConductaFloor Silver', size: '300 × 300mm', badge: 'New', pattern: 'tile-pattern-6', tags: ['Dissipative','Server Room','Anti-Static'], desc: 'Static-dissipative tile for server rooms, telecom centers, and IT suites.' },
+  ],
+  'cool-roof': [
+    { name: 'SolarReflect White', size: '600 × 600mm', badge: 'SRI 104', pattern: 'tile-pattern-2', tags: ['Solar Reflective Index 104','Terrace','Reduces Heat'], desc: 'Ultra-white solar-reflective tile with SRI of 104. Reduces rooftop temperature by up to 30°C.' },
+    { name: 'CoolTone Grey', size: '600 × 600mm', badge: 'Energy Rated', pattern: 'tile-pattern-6', tags: ['SRI 78','Courtyard','Durable'], desc: 'Mid-grey cool roof tile offering both aesthetics and energy performance for terraces.' },
+    { name: 'ThermaClad Cream', size: '600 × 600mm', badge: 'Popular', pattern: 'tile-pattern-1', tags: ['Warm Tone','Cool Roof','Anti-Slip'], desc: 'Warm cream cool-roof tile that blends aesthetics with heat management.' },
+    { name: 'ArcticShield Premium', size: '600 × 1200mm', badge: 'Flagship', pattern: 'tile-pattern-marble', tags: ['SRI 110','Large Format','Premium'], desc: 'Premium large-format cool roof tile with highest SRI rating in our range.' },
+  ],
+};
+
+/* ─────────────────────────────────────────
+   COMPARISON STATE
+───────────────────────────────────────── */
+let compareList = [];
+
+/* ─────────────────────────────────────────
+   ROUTING: Page Management
+───────────────────────────────────────── */
+function showPage(pageId) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  // Show target
+  const target = document.getElementById('page-' + pageId);
+  if (target) {
+    target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  // Update nav active state
+  document.querySelectorAll('.nav-link[data-page]').forEach(l => {
+    l.classList.toggle('active', l.dataset.page === pageId);
+  });
+  // Show/hide footer
+  const footer = document.getElementById('site-footer');
+  footer.style.display = 'block';
+  // Move footer inside active page if needed — simpler: always show at bottom of body
+  // Initialize page content
+  if (pageId === 'wall-tiles') renderProducts('wall', 'bathroom');
+  if (pageId === 'floor-tiles') renderProducts('floor', 'bathroom');
+  if (pageId === 'special-tiles') renderSpecialProducts('germ-free');
+  // Observe fade-in
+  setTimeout(() => observeFadeIn(), 100);
+}
+
+function showSubPage(pageId, subId) {
+  showPage(pageId);
+  setTimeout(() => {
+    if (pageId === 'wall-tiles') {
+      renderProducts('wall', subId);
+      activateTab('wall', subId);
+    } else if (pageId === 'floor-tiles') {
+      renderProducts('floor', subId);
+      activateTab('floor', subId);
+    } else if (pageId === 'special-tiles') {
+      renderSpecialProducts(subId);
+      activateTab('special', subId);
+    }
+  }, 50);
+}
+
+function activateTab(type, subId) {
+  const map = {
+    wall: { container: 'wall-tabs', tabLabel: ['bathroom','kitchen','outdoor','living-room','bedroom','commercial'] },
+    floor: { container: 'floor-tabs', tabLabel: ['bathroom','kitchen','outdoor','living-room','bedroom','commercial'] },
+    special: { container: 'special-tabs', tabLabel: ['germ-free','tac','anti-static','cool-roof'] },
+  };
+  const cfg = map[type];
+  const tabs = document.querySelectorAll(`#${cfg.container} .sub-tab`);
+  const idx = cfg.tabLabel.indexOf(subId);
+  tabs.forEach((t, i) => t.classList.toggle('active', i === idx));
+}
+
+/* ─────────────────────────────────────────
+   PRODUCT RENDERING
+───────────────────────────────────────── */
+function renderProducts(type, subId) {
+  const data = type === 'wall' ? wallProducts : floorProducts;
+  const products = data[subId] || [];
+  const gridId = type + '-products-grid';
+  const titleId = type + '-section-title';
+  const subTitleId = type + '-section-sub';
+  const labelMap = {
+    bathroom:'Bathroom', kitchen:'Kitchen', outdoor:'Outdoor', 'living-room':'Living Room', bedroom:'Bedroom', commercial:'Commercial Spaces'
+  };
+  const subTitleMap = {
+    wall: { bathroom:'Moisture-resistant luxury', kitchen:'Splashbacks & feature walls', outdoor:'Weather-proof & durable', 'living-room':'Statement walls & accents', bedroom:'Calm & elegant surfaces', commercial:'Specification-grade tiles' },
+    floor: { bathroom:'Safe, beautiful wet-area floors', kitchen:'Durable, stylish kitchen floors', outdoor:'All-weather outdoor flooring', 'living-room':'Expansive, luminous floors', bedroom:'Comfortable, warm underfoot', commercial:'Heavy-duty performance tiles' },
+  };
+  const label = labelMap[subId] + ' ' + (type === 'wall' ? 'Wall Tiles' : 'Floor Tiles');
+  document.getElementById(titleId).textContent = label;
+  document.getElementById(subTitleId).innerHTML = subTitleMap[type][subId] + ' <em>— explore the range</em>';
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = products.map((p, i) => productCardHTML(p, i)).join('');
+}
+
+function renderSpecialProducts(subId) {
+  const products = specialProducts[subId] || [];
+  const descMap = {
+    'germ-free': 'Anti-bacterial and anti-viral tiles featuring proprietary ionic silver glaze. Certified to ISO 22196 and FDA-compliant for food service and healthcare environments.',
+    tac: 'Tactile attention coridor (TAC) tiles engineered to international accessibility standards. Provide essential tactile guidance for visually impaired users in public spaces.',
+    'anti-static': 'Electrostatic discharge (ESD) control tiles for sensitive environments. Compliant with IEC 61340 standard for data centers, clean rooms, and manufacturing facilities.',
+    'cool-roof': 'Solar-reflective tiles for terraces, balconies, and rooftops. Our Cool Roof range reflects up to 80% of solar radiation, reducing surface temperatures by up to 30°C.',
+  };
+  const titleMap = {
+    'germ-free':'Germ Free Tiles', tac:'TAC Tiles', 'anti-static':'Anti-Static Tiles', 'cool-roof':'Cool Roof Tiles'
+  };
+  const subTitleMap = {
+    'germ-free':'Clinically tested <em>anti-microbial</em> surfaces', tac:'Tactile tiles for <em>inclusive</em> design', 'anti-static':'ESD-control tiles for <em>sensitive environments</em>', 'cool-roof':'Heat-reflective tiles for <em>cooler spaces</em>'
+  };
+  document.getElementById('special-section-title').textContent = titleMap[subId];
+  document.getElementById('special-section-sub').innerHTML = subTitleMap[subId];
+  document.getElementById('special-desc').textContent = descMap[subId];
+  const grid = document.getElementById('special-products-grid');
+  grid.innerHTML = products.map((p, i) => productCardHTML(p, i)).join('');
+}
+
+function productCardHTML(p, i) {
+  const inList = compareList.find(c => c.name === p.name);
+  const checked = inList ? 'checked' : '';
+  const checkedClass = inList ? ' checked' : '';
+  return `
+  <div class="product-card" data-name="${p.name}">
+    <div class="product-img">
+      <div class="product-img-bg ${p.pattern}"></div>
+      ${p.badge ? `<div class="product-badge">${p.badge}</div>` : ''}
+      <div class="compare-check${checkedClass}" onclick="toggleCompare(this, '${p.name}', '${p.size}', '${p.tags.join(',')}', '${p.desc}')" title="Compare">✓</div>
+    </div>
+    <div class="product-info">
+      <div class="product-name">${p.name}</div>
+      <div class="product-size">${p.size}</div>
+      <div class="product-features">
+        ${p.tags.map(t => `<span class="feat-tag">${t}</span>`).join('')}
+      </div>
+      <div style="font-size:0.78rem;color:var(--c-text-muted);margin-bottom:18px;line-height:1.6">${p.desc}</div>
+      <div class="product-actions">
+        <a class="btn-sm btn-sm-gold" onclick="downloadDoc('${p.name}')">Spec Sheet ↓</a>
+        <a class="btn-sm" onclick="alert('Sample request sent for: ${p.name}')">Request Sample</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ─────────────────────────────────────────
+   SUB-TAB SWITCHING
+───────────────────────────────────────── */
+function switchSubTab(type, subId, el) {
+  const containers = { wall: '#wall-tabs', floor: '#floor-tabs', special: '#special-tabs' };
+  document.querySelectorAll(containers[type] + ' .sub-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  if (type === 'wall') renderProducts('wall', subId);
+  else if (type === 'floor') renderProducts('floor', subId);
+  else if (type === 'special') renderSpecialProducts(subId);
+  window.scrollTo({ top: document.querySelector('.products-section')?.offsetTop - 80 || 300, behavior: 'smooth' });
+}
+
+/* ─────────────────────────────────────────
+   COMPARISON SYSTEM
+───────────────────────────────────────── */
+function toggleCompare(el, name, size, tagsStr, desc) {
+  const idx = compareList.findIndex(c => c.name === name);
+  if (idx > -1) {
+    compareList.splice(idx, 1);
+    el.classList.remove('checked');
+  } else {
+    if (compareList.length >= 3) {
+      alert('You can compare up to 3 products at a time. Remove one first.');
+      return;
+    }
+    compareList.push({ name, size, tags: tagsStr.split(','), desc });
+    el.classList.add('checked');
+  }
+  updateCompareBar();
+}
+
+function updateCompareBar() {
+  const bar = document.getElementById('compare-bar');
+  const btn = document.getElementById('compare-btn');
+  if (compareList.length === 0) {
+    bar.classList.remove('visible');
+    return;
+  }
+  bar.classList.add('visible');
+  for (let i = 1; i <= 3; i++) {
+    const slot = document.getElementById('slot-' + i);
+    if (compareList[i-1]) {
+      slot.textContent = compareList[i-1].name;
+      slot.classList.add('filled');
+    } else {
+      slot.textContent = '— Select product —';
+      slot.classList.remove('filled');
+    }
+  }
+  if (compareList.length >= 2) {
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+  } else {
+    btn.style.opacity = '0.4';
+    btn.style.pointerEvents = 'none';
+  }
+}
+
+function clearComparison() {
+  compareList = [];
+  document.querySelectorAll('.compare-check.checked').forEach(el => el.classList.remove('checked'));
+  document.getElementById('compare-bar').classList.remove('visible');
+}
+
+function openComparison() {
+  if (compareList.length < 2) return;
+  const allTags = [...new Set(compareList.flatMap(p => p.tags))];
+  let html = `
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th style="width:160px">Feature</th>
+        ${compareList.map(p => `<th>${p.name}</th>`).join('')}
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="compare-feature-label">Size</td>
+        ${compareList.map(p => `<td>${p.size}</td>`).join('')}
+      </tr>
+      ${allTags.map(tag => `
+      <tr>
+        <td class="compare-feature-label">${tag}</td>
+        ${compareList.map(p => `<td>${p.tags.includes(tag) ? '<span style="color:var(--c-gold)">✓</span>' : '—'}</td>`).join('')}
+      </tr>`).join('')}
+      <tr>
+        <td class="compare-feature-label">Description</td>
+        ${compareList.map(p => `<td style="font-size:0.78rem">${p.desc}</td>`).join('')}
+      </tr>
+    </tbody>
+  </table>`;
+  document.getElementById('compare-table-container').innerHTML = html;
+  document.getElementById('compareModal').classList.add('open');
+  document.body.classList.add('no-scroll');
+}
+
+function closeComparison() {
+  document.getElementById('compareModal').classList.remove('open');
+  document.body.classList.remove('no-scroll');
+}
+
+/* ─────────────────────────────────────────
+   HERO SLIDESHOW
+───────────────────────────────────────── */
+let currentSlide = 0;
+const slides = document.querySelectorAll('.hero-slide');
+const dots = document.querySelectorAll('.hero-dot');
+
+function goToSlide(n) {
+  slides[currentSlide].classList.remove('active');
+  dots[currentSlide].classList.remove('active');
+  currentSlide = n;
+  slides[currentSlide].classList.add('active');
+  dots[currentSlide].classList.add('active');
+}
+
+setInterval(() => {
+  goToSlide((currentSlide + 1) % slides.length);
+}, 5000);
+
+/* ─────────────────────────────────────────
+   TILE CALCULATOR
+───────────────────────────────────────── */
+function calculateTiles() {
+  const length = parseFloat(document.getElementById('roomLength').value) || 0;
+  const width = parseFloat(document.getElementById('roomWidth').value) || 0;
+  const tileL = parseInt(document.getElementById('tileLength').value) / 1000;
+  const tileW = parseInt(document.getElementById('tileWidth').value) / 1000;
+  const waste = parseInt(document.getElementById('wastePercent').value) / 100;
+  const areaType = document.getElementById('areaType').value;
+
+  if (!length || !width) { alert('Please enter room dimensions.'); return; }
+
+  let area = length * width;
+  if (areaType === 'all-walls') {
+    // Perimeter × height (use width as height for all-walls)
+    area = 2 * (length + width) * width;
+  }
+
+  const tileArea = tileL * tileW;
+  const tilesBase = Math.ceil(area / tileArea);
+  const tilesWithWaste = Math.ceil(tilesBase * (1 + waste));
+  const boxes = Math.ceil(tilesWithWaste / 4);
+
+  document.getElementById('tilesNeeded').textContent = tilesWithWaste;
+  document.getElementById('areaCalc').textContent = area.toFixed(2) + ' m²';
+  document.getElementById('boxesNeeded').textContent = boxes;
+  document.getElementById('calcResult').classList.add('visible');
+}
+
+/* ─────────────────────────────────────────
+   CATALOGUE DOWNLOAD (simulated)
+───────────────────────────────────────── */
+function downloadCatalogue(type) {
+  const names = { gvt:'Glazed Vitrified Tiles', ceramic:'Ceramic Tiles', pvt:'Polished Vitrified Tiles', special:'Special Technology Tiles' };
+  // In a real deployment this would trigger an actual PDF download
+  alert(`Downloading: Terra Luxe — ${names[type]} Catalogue 2025\n\nIn a live deployment, the PDF would be served from your server.`);
+}
+
+/* ─────────────────────────────────────────
+   SPEC SHEET DOWNLOAD (simulated)
+───────────────────────────────────────── */
+function downloadDoc(productName) {
+  alert(`Downloading product specification sheet for:\n${productName}\n\nIn a live deployment, a .docx/.pdf spec sheet would download.`);
+}
+
+/* ─────────────────────────────────────────
+   CONTACT FORM
+───────────────────────────────────────── */
+function submitForm() {
+  const email = document.getElementById('cemail').value;
+  const message = document.getElementById('cmessage').value;
+  if (!email || !message) { alert('Please fill in at least your email and message.'); return; }
+  document.getElementById('formSuccess').classList.add('visible');
+  ['fname','lname','cemail','cphone','cmessage'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  setTimeout(() => document.getElementById('formSuccess').classList.remove('visible'), 6000);
+}
+
+/* ─────────────────────────────────────────
+   MOBILE MENU
+───────────────────────────────────────── */
+function toggleMobile() {
+  const menu = document.getElementById('mobileMenu');
+  menu.classList.toggle('open');
+}
+function closeMobile() {
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
+/* ─────────────────────────────────────────
+   NAVBAR SCROLL
+───────────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+/* ─────────────────────────────────────────
+   FADE-IN OBSERVER
+───────────────────────────────────────── */
+function observeFadeIn() {
+  const els = document.querySelectorAll('.fade-in');
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    els.forEach(el => obs.observe(el));
+  } else {
+    els.forEach(el => el.classList.add('visible'));
+  }
+}
+
+/* ─────────────────────────────────────────
+   FOOTER: append to each page
+───────────────────────────────────────── */
+// Move footer inside currently active page on page change
+function attachFooter(pageId) {
+  const footer = document.getElementById('site-footer');
+  const page = document.getElementById('page-' + pageId);
+  if (page) {
+    footer.style.display = 'block';
+    page.appendChild(footer);
+  }
+}
+
+/* Override showPage to also attach footer */
+const _showPage = showPage;
+window.showPage = function(pageId) {
+  _showPage(pageId);
+  attachFooter(pageId);
+};
+
+/* ─────────────────────────────────────────
+   INIT
+───────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  observeFadeIn();
+  attachFooter('home');
+  // Close modal on overlay click
+  document.getElementById('compareModal').addEventListener('click', function(e) {
+    if (e.target === this) closeComparison();
+  });
+});
+</script>
+</body>
+</html>
